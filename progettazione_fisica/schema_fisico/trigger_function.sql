@@ -39,13 +39,49 @@ $$
 $$LANGUAGE plpgsql;
 
 
+------- TRIGGER CHE CI PERMETTONO DI UPDATARE IL NUMERO DI SALVATAGGI DI UNA RACCOLTA ----------
+
+CREATE OR REPLACE TRIGGER increment_num_salvataggi
+AFTER INSERT ON salvataggio
+FOR EACH ROW
+EXECUTE FUNCTION increment_num_salvataggi();
+
+CREATE OR REPLACE FUNCTION increment_num_salvataggi()
+RETURNS TRIGGER AS
+$$
+    BEGIN
+        UPDATE raccolta SET num_salvataggi = num_salvataggi + 1 WHERE new.raccolta = raccolta.cod_raccolta;
+
+        RETURN new;
+    end;
+
+$$LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER decrement_num_salvataggi
+AFTER DELETE ON salvataggio
+FOR EACH ROW
+EXECUTE FUNCTION decrement_num_salvataggi();
+
+CREATE OR REPLACE FUNCTION decrement_num_salvataggi()
+RETURNS TRIGGER AS
+$$
+    BEGIN
+        UPDATE raccolta SET num_salvataggi = num_salvataggi - 1 WHERE new.raccolta = raccolta.cod_raccolta;
+
+        RETURN new;
+    end;
+
+$$LANGUAGE plpgsql;
 
 
 
 
-
-
-
-
+CREATE OR REPLACE VIEW top_ten_saves AS
+SELECT isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, count(num_salvataggi) AS numero_salvataggi
+FROM libro_contenuto_raccolta AS lr JOIN raccolta AS r ON lr.raccolta = r.cod_raccolta
+                                    JOIN libro AS l ON l.isbn = lr.libro
+GROUP BY isbn
+ORDER BY numero_salvataggi DESC
+FETCH FIRST 10 ROWS ONLY;
 
 

@@ -56,42 +56,46 @@ create table if not exists Serie
 
 create table if not exists Utente
 (
-  cod_utente varchar not null,
-  nickname varchar unique not null,
-  email email_type unique not null,
-  password bytea not null,
-  nome varchar not null,
-  cognome varchar not null,
-  data_nascita date not null,
-  admin bool not null,
+    cod_utente serial not null,
+    nickname varchar unique not null,
+    email email_type unique not null,
+    password bytea not null,
+    nome varchar not null,
+    cognome varchar not null,
+    data_nascita date not null,
+    admin bool not null default false,
 
-  CONSTRAINT Utente_PK PRIMARY KEY (cod_utente),
+    CONSTRAINT Utente_PK PRIMARY KEY (cod_utente),
 
-  check (nickname !~ '^.*[^A-Za-z0-9].*$')
+    check (nickname !~ '^.*[^A-Za-z0-9].*$')
 );
 
 
 create table if not exists Notifica
 (
-  messaggio text not null,
-  ora_data timestamptz not null
+    messaggio text not null,
+    ora_data timestamptz not null,
+    utente serial not null,
+
+    CONSTRAINT Utente_FK FOREIGN KEY (utente) REFERENCES Utente(cod_utente)
 );
 
 create table if not exists Raccolta
 (
-    cod_raccolta integer not null,
-    num_salvataggi integer not null,
-    visibilità boolean not null,
-    proprietario varchar not null,
+    cod_raccolta serial not null,
+    num_salvataggi integer not null default 0,
+    visibilità boolean not null default false,
+    proprietario serial not null,
 
     CONSTRAINT Raccolta_PK PRIMARY KEY (cod_raccolta),
     CONSTRAINT Raccolta_FK FOREIGN KEY (proprietario) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
+
 create table if not exists Libro_Contenuto_Raccolta
 (
-  raccolta integer not null,
+  raccolta serial not null,
   libro isbn not null,
 
   CONSTRAINT Libro_Contenuto_Raccolta_PK PRIMARY KEY (raccolta, libro),
@@ -101,7 +105,7 @@ create table if not exists Libro_Contenuto_Raccolta
 
 create table if not exists Articolo_Contenuto_Raccolta
 (
-  raccolta integer not null,
+  raccolta serial not null,
   articolo_scientifico isbn not null,
 
   CONSTRAINT Articolo_Contenuto_Raccolta_PK PRIMARY KEY (raccolta, articolo_scientifico),
@@ -109,15 +113,14 @@ create table if not exists Articolo_Contenuto_Raccolta
   CONSTRAINT Articolo_Contenuto_Raccolta_FK2 FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico (ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-create table if not exists Salvataggio
+create table if not exists Utente_Salvataggio_Raccolta
 (
-  utente varchar not null,
-  raccolta integer not null,
+    utente serial not null,
+    raccolta serial not null,
 
     CONSTRAINT Salvataggio_PK PRIMARY KEY (utente, raccolta),
-    CONSTRAINT Salvataggio_FK1 FOREIGN KEY (utente) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Salvataggio_FK2 FOREIGN KEY (raccolta) REFERENCES Raccolta (cod_raccolta) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Utente_FK FOREIGN KEY (utente) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT Raccolta_FK FOREIGN KEY (raccolta) REFERENCES Raccolta (cod_raccolta) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Rivista
@@ -131,14 +134,14 @@ CREATE TABLE IF NOT EXISTS Rivista
     CONSTRAINT Rivista_PK PRIMARY KEY (cod_rivista)
 );
 
-CREATE TABLE IF NOT EXISTS Pubblicazione
+CREATE TABLE IF NOT EXISTS Articolo_Scientifico_Pubblicazione_Rivista
 (
     rivista INTEGER NOT NULL,
     articolo_scientifico isbn NOT NULL,
 
     CONSTRAINT Pubblicazione_PK PRIMARY KEY (rivista, articolo_scientifico),
-    CONSTRAINT Pubblicazione_Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(cod_rivista) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Pubblicazione_Articolo_Scientifico_FK FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico(ISBN) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(cod_rivista) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT Articolo_Scientifico_FK FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico(ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
