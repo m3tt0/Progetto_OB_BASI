@@ -1,52 +1,41 @@
-create domain isbn as char(17) check(value like '978-__-___-____-_');
-
-create domain issn as char(9) check(value like '____-____');
-
-create domain email_type as varchar check (value like '%@%.%');
-
-create type tipo_fruizione as enum ('digitale', 'cartaceo', 'audiolibro');
-
-create type tipo_libro as enum ('didattico', 'romanzo');
-
-create table if not exists Libro
+CREATE TABLE IF NOT EXISTS Libro
 (
-    ISBN isbn NOT NULL,
-    titolo varchar NOT NULL,
-    editore varchar NOT NULL,
-    modalita_fruizione tipo_fruizione NOT NULL,
-    anno_pubblicazione numeric(4) NOT NULL,
-    copertina bytea NOT NULL,
-    descrzione varchar,
-    genere varchar,
-    target varchar,
-    materia varchar,
-    tipo tipo_libro NOT NULL,
+    isbn ISBN NOT NULL,
+    titolo VARCHAR NOT NULL,
+    editore VARCHAR NOT NULL,
+    modalita_fruizione TIPO_FRUIZIONE NOT NULL,
+    anno_pubblicazione NUMERIC(4) NOT NULL,
+    copertina BYTEA NOT NULL,
+    descrzione VARCHAR,
+    genere VARCHAR,
+    target VARCHAR,
+    materia VARCHAR,
+    tipo TIPO_LIBRO NOT NULL,
 
     CONSTRAINT Libro_PK PRIMARY KEY (ISBN),
-    CONSTRAINT didattico_or_romanzo check (tipo = 'romanzo' and genere is not null or tipo = 'didattico' and materia is not null and target is not null)
-
+    CONSTRAINT didattico_or_romanzo CHECK (tipo = 'romanzo' AND genere IS NOT NULL OR
+                                           tipo = 'didattico' AND materia IS NOT NULL AND target IS NOT NULL)
 );
 
-create table if not exists Articolo_Scientifico
+CREATE TABLE IF NOT EXISTS Articolo_Scientifico
 (
-    ISBN isbn NOT NULL,
-    titolo varchar NOT NULL,
-    editore varchar NOT NULL,
-    modalita_fruizione tipo_fruizione NOT NULL,
-    anno_pubblicazione smallint NOT NULL,
-    copertina bytea,
-    descrzione varchar,
+    isbn ISBN NOT NULL,
+    titolo VARCHAR NOT NULL,
+    editore VARCHAR NOT NULL,
+    modalita_fruizione TIPO_FRUIZIONE NOT NULL,
+    anno_pubblicazione SMALLINT NOT NULL,
+    copertina BYTEA,
+    descrzione VARCHAR,
 
     CONSTRAINT Articolo_Scientifico_PK PRIMARY KEY (ISBN)
-
 );
 
-create table if not exists Serie
+CREATE TABLE IF NOT EXISTS Serie
 (
-    codice_serie integer not null,
-    prequel isbn not null,
-    sequel isbn not null,
-    nome varchar not null,
+    codice_serie INTEGER NOT NULL,
+    prequel ISBN NOT NULL,
+    sequel ISBN NOT NULL,
+    nome VARCHAR NOT NULL,
 
     CONSTRAINT Serie_PK PRIMARY KEY (codice_serie, prequel, sequel),
     CONSTRAINT Prequel_FK FOREIGN KEY (prequel) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -54,44 +43,46 @@ create table if not exists Serie
 );
 
 
-create table if not exists Utente
+CREATE TABLE IF NOT EXISTS Utente
 (
-  cod_utente varchar not null,
-  nickname varchar unique not null,
-  email email_type unique not null,
-  password bytea not null,
-  nome varchar not null,
-  cognome varchar not null,
-  data_nascita date not null,
-  admin bool not null,
+    cod_utente SERIAL NOT NULL,
+    nickname VARCHAR UNIQUE NOT NULL,
+    email EMAIL_TYPE UNIQUE NOT NULL,
+    password BYTEA NOT NULL,
+    nome VARCHAR NOT NULL,
+    cognome VARCHAR NOT NULL,
+    data_nascita DATE NOT NULL,
+    admin BOOL NOT NULL DEFAULT FALSE,
 
-  CONSTRAINT Utente_PK PRIMARY KEY (cod_utente),
+    CONSTRAINT Utente_PK PRIMARY KEY (cod_utente),
 
-  check (nickname !~ '^.*[^A-Za-z0-9].*$')
+    CHECK (nickname !~ '^.*[^A-Za-z0-9].*$')
 );
 
 
-create table if not exists Notifica
+CREATE TABLE IF NOT EXISTS Notifica
 (
-  messaggio text not null,
-  ora_data timestamptz not null
+    messaggio TEXT NOT NULL,
+    ora_data TIMESTAMP NOT NULL,
+    utente SERIAL NOT NULL,
+
+    CONSTRAINT Utente_FK FOREIGN KEY (utente) REFERENCES Utente(cod_utente)
 );
 
-create table if not exists Raccolta
+CREATE TABLE IF NOT EXISTS Raccolta
 (
-    cod_raccolta integer not null,
-    num_salvataggi integer not null,
-    visibilità boolean not null,
-    proprietario varchar not null,
+    cod_raccolta SERIAL NOT NULL,
+    num_salvataggi INTEGER NOT NULL DEFAULT 0,
+    visibilità BOOLEAN NOT NULL DEFAULT FALSE,
+    proprietario SERIAL NOT NULL,
 
     CONSTRAINT Raccolta_PK PRIMARY KEY (cod_raccolta),
     CONSTRAINT Raccolta_FK FOREIGN KEY (proprietario) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-create table if not exists Libro_Contenuto_Raccolta
+CREATE TABLE IF NOT EXISTS Libro_Contenuto_Raccolta
 (
-  raccolta integer not null,
+  raccolta serial not null,
   libro isbn not null,
 
   CONSTRAINT Libro_Contenuto_Raccolta_PK PRIMARY KEY (raccolta, libro),
@@ -99,25 +90,24 @@ create table if not exists Libro_Contenuto_Raccolta
   CONSTRAINT Libro_Contenuto_Raccolta_FK2 FOREIGN KEY (libro) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-create table if not exists Articolo_Contenuto_Raccolta
+CREATE TABLE IF NOT EXISTS Articolo_Contenuto_Raccolta
 (
-  raccolta integer not null,
-  articolo_scientifico isbn not null,
+  raccolta SERIAL NOT NULL,
+  articolo_scientifico ISBN NOT NULL,
 
   CONSTRAINT Articolo_Contenuto_Raccolta_PK PRIMARY KEY (raccolta, articolo_scientifico),
   CONSTRAINT Articolo_Contenuto_Raccolta_FK1 FOREIGN KEY (raccolta) REFERENCES Raccolta (cod_raccolta) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT Articolo_Contenuto_Raccolta_FK2 FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico (ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-create table if not exists Salvataggio
+CREATE TABLE IF NOT EXISTS Utente_Salvataggio_Raccolta
 (
-  utente varchar not null,
-  raccolta integer not null,
+    utente SERIAL NOT NULL,
+    raccolta SERIAL NOT NULL,
 
     CONSTRAINT Salvataggio_PK PRIMARY KEY (utente, raccolta),
-    CONSTRAINT Salvataggio_FK1 FOREIGN KEY (utente) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Salvataggio_FK2 FOREIGN KEY (raccolta) REFERENCES Raccolta (cod_raccolta) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Utente_FK FOREIGN KEY (utente) REFERENCES Utente (cod_utente) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT Raccolta_FK FOREIGN KEY (raccolta) REFERENCES Raccolta (cod_raccolta) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Rivista
@@ -131,14 +121,14 @@ CREATE TABLE IF NOT EXISTS Rivista
     CONSTRAINT Rivista_PK PRIMARY KEY (cod_rivista)
 );
 
-CREATE TABLE IF NOT EXISTS Pubblicazione
+CREATE TABLE IF NOT EXISTS Articolo_Scientifico_Pubblicazione_Rivista
 (
     rivista INTEGER NOT NULL,
     articolo_scientifico isbn NOT NULL,
 
     CONSTRAINT Pubblicazione_PK PRIMARY KEY (rivista, articolo_scientifico),
-    CONSTRAINT Pubblicazione_Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(cod_rivista) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Pubblicazione_Articolo_Scientifico_FK FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico(ISBN) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(cod_rivista) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT Articolo_Scientifico_FK FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico(ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -157,7 +147,7 @@ CREATE TABLE IF NOT EXISTS Conferenza
 CREATE TABLE IF NOT EXISTS Presentazione_Articolo
 (
     codice_conferenza INTEGER NOT NULL,
-    articolo_scientifico isbn NOT NULL,
+    articolo_scientifico ISBN NOT NULL,
     data_presentazione DATE NOT NULL,
 
     CONSTRAINT Presentazione_Articolo_PK PRIMARY KEY (codice_conferenza, articolo_scientifico),
@@ -167,7 +157,7 @@ CREATE TABLE IF NOT EXISTS Presentazione_Articolo
 
 CREATE TABLE IF NOT EXISTS Collana
 (
-    ISSN issn NOT NULL,
+    issn ISSN NOT NULL,
     nome VARCHAR NOT NULL,
     editore VARCHAR NOT NULL,
 
@@ -176,8 +166,8 @@ CREATE TABLE IF NOT EXISTS Collana
 
 CREATE TABLE IF NOT EXISTS Libro_Contenuto_Collana
 (
-    ISBN isbn NOT NULL,
-    ISNN issn NOT NULL,
+    isbn ISBN NOT NULL,
+    isnn ISSN NOT NULL,
 
     CONSTRAINT Libro_Contenuto_Collana_PK PRIMARY KEY (ISBN, ISNN) ,
     CONSTRAINT Libro_Contenuto_Collana_FK_Libro FOREIGN KEY (ISBN) REFERENCES Libro(ISBN) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -200,7 +190,7 @@ CREATE TABLE IF NOT EXISTS Autore
 CREATE TABLE IF NOT EXISTS Scrittura_Articolo
 (
     cod_autore INTEGER NOT NULL,
-    ISBN isbn NOT NULL,
+    isbn ISBN NOT NULL,
 
     CONSTRAINT Scrittura_Articolo_PK PRIMARY KEY (cod_autore, ISBN),
     CONSTRAINT Scrittura_Articolo_FK_Autore FOREIGN KEY (cod_autore) REFERENCES Autore(cod_autore) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -210,7 +200,7 @@ CREATE TABLE IF NOT EXISTS Scrittura_Articolo
 CREATE TABLE IF NOT EXISTS Scrittura_Libro
 (
     cod_autore INTEGER NOT NULL,
-    ISBN isbn NOT NULL,
+    isbn ISBN NOT NULL,
 
     CONSTRAINT Scrittura_Libro_PK PRIMARY KEY (cod_autore, ISBN),
     CONSTRAINT Scrittura_Libro_FK_Autore FOREIGN KEY (cod_autore) REFERENCES Autore(cod_autore) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -229,12 +219,27 @@ CREATE TABLE IF NOT EXISTS Sala
 CREATE TABLE IF NOT EXISTS Presentazione_Libro
 (
     codice_sala INTEGER NOT NULL,
-    ISBN isbn NOT NULL,
+    isbn ISBN NOT NULL,
     data_presentazione DATE NOT NULL,
 
     CONSTRAINT Presentazione_Libro_PK PRIMARY KEY (codice_sala, ISBN),
     CONSTRAINT Presentazione_Libro_FK_Sala FOREIGN KEY (codice_sala) REFERENCES Sala(codice_sala) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT Presentazione_Libro_FK_Libro FOREIGN KEY (ISBN) REFERENCES Libro(ISBN) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Negozio
+(
+    partita_iva CHAR(11) NOT NULL,
+    nome VARCHAR NOT NULL,
+    indirizzo VARCHAR,
+    url VARCHAR,
+
+    CONSTRAINT Negozio_PK PRIMARY KEY (partita_iva),
+
+    CHECK (partita_iva ~ '^\d+$'),
+
+    CHECK (indirizzo != NULL OR url != NULL)
+
 );
 
 CREATE TABLE IF NOT EXISTS Vendita
@@ -248,24 +253,3 @@ CREATE TABLE IF NOT EXISTS Vendita
     CONSTRAINT Negozio_FK FOREIGN KEY (negozio) REFERENCES Negozio (partita_iva) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT Libro_FK FOREIGN KEY (libro) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS Negozio
-(
-    partita_iva CHAR(11) NOT NULL,
-    nome VARCHAR NOT NULL,
-    indirizzo VARCHAR,
-    url VARCHAR,
-
-    CONSTRAINT Negozio_PK PRIMARY KEY (partita_iva),
-
-    check (partita_iva ~ '^\d+$'),
-
-    check (indirizzo != NULL OR url != NULL)
-
-);
-
-
-
-
-
-
