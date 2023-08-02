@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS Libro
     tipo TIPO_LIBRO NOT NULL,
 
     CONSTRAINT Libro_PK PRIMARY KEY (ISBN),
-    CONSTRAINT didattico_or_romanzo CHECK (tipo = 'romanzo' AND genere IS NOT NULL OR
-                                           tipo = 'didattico' AND materia IS NOT NULL AND target IS NOT NULL)
+    CONSTRAINT didattico_or_romanzo CHECK (tipo = 'romanzo' AND genere IS NOT NULL AND materia IS NULL AND target IS NULL OR
+                                           tipo = 'didattico' AND materia IS NOT NULL AND target IS NOT NULL AND genere IS NULL)
 );
 
 CREATE TABLE IF NOT EXISTS Articolo_Scientifico
@@ -32,14 +32,15 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
 
 CREATE TABLE IF NOT EXISTS Serie
 (
-    codice_serie INTEGER NOT NULL,
-    prequel ISBN NOT NULL,
+    libro ISBN NOT NULL,
     sequel ISBN NOT NULL,
-    nome VARCHAR NOT NULL,
+    nome_serie VARCHAR NOT NULL,
 
-    CONSTRAINT Serie_PK PRIMARY KEY (codice_serie, prequel, sequel),
-    CONSTRAINT Prequel_FK FOREIGN KEY (prequel) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Sequel_FK FOREIGN KEY (sequel) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Serie_PK PRIMARY KEY (nome_serie, libro, sequel),
+    CONSTRAINT Prequel_FK FOREIGN KEY (libro) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT Sequel_FK FOREIGN KEY (sequel) REFERENCES Libro (ISBN) ON UPDATE CASCADE ON DELETE CASCADE,
+
+    CONSTRAINT notequal CHECK(libro != sequel)
 );
 
 
