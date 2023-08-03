@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
 
 CREATE TABLE IF NOT EXISTS Serie
 (
-    libro ISBN NOT NULL,
-    sequel ISBN NOT NULL,
+    libro ISBN NOT NULL UNIQUE,
+    sequel ISBN NOT NULL UNIQUE,
     nome_serie VARCHAR NOT NULL,
 
     CONSTRAINT Serie_PK PRIMARY KEY (nome_serie, libro, sequel),

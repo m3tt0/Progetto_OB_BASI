@@ -125,7 +125,7 @@ EXECUTE FUNCTION integrita_serie();
 CREATE OR REPLACE FUNCTION integrita_serie()
 RETURNS TRIGGER AS $$
     BEGIN
-        IF EXISTS(SELECT FROM libreria.serie WHERE nome_serie = new.nome_serie) AND NOT EXISTS(SELECT FROM libreria.serie AS s WHERE s.sequel = new.libro) THEN
+        IF EXISTS(SELECT * FROM libreria.serie WHERE nome_serie = new.nome_serie) AND (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.sequel = new.libro AND s.nome_serie = new.nome_serie) OR EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = new.sequel AND s.nome_serie = new.nome_serie)) THEN
             rollback;
         END IF;
 
@@ -137,11 +137,11 @@ language plpgsql;
 
 
 
-
-
-
-
-
+SELECT *
+FROM libreria.negozio as n
+WHERE n.partita_iva IN (SELECT v.negozio
+                        FROM libreria.vendita AS v
+                        WHERE )
 
 
 
