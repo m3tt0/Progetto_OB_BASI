@@ -122,10 +122,15 @@ BEFORE INSERT ON serie
 FOR EACH ROW
 EXECUTE FUNCTION integrita_serie();
 
+
 CREATE OR REPLACE FUNCTION integrita_serie()
 RETURNS TRIGGER AS $$
     BEGIN
-        IF EXISTS(SELECT * FROM libreria.serie WHERE nome_serie = new.nome_serie) AND (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.sequel = new.libro AND s.nome_serie = new.nome_serie) OR EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = new.sequel AND s.nome_serie = new.nome_serie)) THEN
+        IF EXISTS(SELECT * FROM libreria.serie WHERE nome_serie = new.nome_serie)
+            AND (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.sequel = new.libro AND s.nome_serie = new.nome_serie)
+            OR EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = new.sequel AND s.nome_serie = new.nome_serie))
+        THEN
+
             rollback;
         END IF;
 
@@ -137,20 +142,27 @@ language plpgsql;
 
 
 
-SELECT *
-FROM libreria.negozio as n
-WHERE n.partita_iva IN (SELECT v.negozio
-                        FROM libreria.vendita AS v
-                        WHERE )
+CREATE OR REPLACE VIEW negozi_serie_complete AS
+SELECT DISTINCT v.negozio, s.nome_serie
+FROM serie as s NATURAL JOIN vendita as v
+WHERE NOT EXISTS (
+    SELECT s1.sequel, s1.libro
+    FROM serie as s1
+    WHERE s1.nome_serie = s.nome_serie
+    AND (sequel NOT IN (SELECT libro FROM Vendita as v1 WHERE v1.negozio = v.negozio)
+    OR libro NOT IN (SELECT libro FROM Vendita as v1 WHERE v1.negozio = v.negozio))
+);
 
 
 
-
-
-
-
-
-
+-- COSE DA FARE:
+-- 1) INSERIRE LA POSSIBILITA DI AGGIUNGERE UNA SERIE IN TESTA O NEL MEZZO E AGGIUNGERE RELATIVE MODIFICHE
+-- 2) AGGIUNGERE NUOVI TRIGGER, TRA CUI:
+                                        -- -ELIMINARE UNA RACCOLTA SE VUOTA
+                                        -- -ELIMINARE UNA COLLONA SE VUOTA
+                                        -- -ELIMINARE UNA RIVISTA SE VUOTA
+                                        -- -ELIMINARE UN NEGOZIO SE NON VENDE NIENTE
+                                        -- -ELIMINARE UN AUTORE SE NON HA SCRITTO LIBRI
 
 
 
