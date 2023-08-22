@@ -117,7 +117,7 @@ $$
 
 -- verificare l'integrità di una serie: una serie deve avere tutti i libri disposti in maniera sequenziale
 
-CREATE OR REPLACE TRIGGER integrita_serie
+CREATE OR REPLACE TRIGGER b_integrita_serie
 BEFORE INSERT ON serie
 FOR EACH ROW
 EXECUTE FUNCTION integrita_serie();
@@ -139,6 +139,45 @@ RETURNS TRIGGER AS $$
     END;
 $$
 language plpgsql;
+
+
+
+
+
+CREATE OR REPLACE TRIGGER a_insert_into_serie
+BEFORE INSERT ON serie
+FOR EACH ROW
+EXECUTE FUNCTION insert_into_serie();
+
+
+CREATE OR REPLACE FUNCTION insert_into_serie()
+RETURNS TRIGGER AS
+$$
+    BEGIN
+        IF EXISTS(SELECT * FROM libreria.serie AS s WHERE new.libro != s.libro AND new.sequel = s.sequel AND new.nome_serie = s.nome_serie) THEN
+            UPDATE libreria.serie SET sequel = new.libro WHERE sequel = new.sequel;
+        END IF;
+
+        return new;
+
+    end;
+$$ language plpgsql;
+
+
+
+
+
+
+
+SELECT l.titolo AS libro, s.libro AS codice_libro, l2.titolo AS sequel, s.sequel AS codice_sequel, s.nome_serie
+FROM (libreria.serie AS s JOIN libreria.libro l on s.libro = l.isbn) JOIN libreria.libro AS l2 ON s.sequel = l2.isbn
+WHERE s.nome_serie = 'HARRY POTTER';
+
+
+
+
+
+
 
 
 
