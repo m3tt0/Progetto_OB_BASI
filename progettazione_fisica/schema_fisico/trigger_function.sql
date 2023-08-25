@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION increment_num_salvataggi()
 RETURNS TRIGGER AS
 $$
     BEGIN
-        UPDATE raccolta SET num_salvataggi = num_salvataggi + 1 WHERE new.raccolta = raccolta.cod_raccolta;
+        UPDATE libreria.raccolta SET num_salvataggi = num_salvataggi + 1 WHERE new.raccolta = raccolta.cod_raccolta;
 
         RETURN new;
     end;
@@ -66,9 +66,9 @@ CREATE OR REPLACE FUNCTION decrement_num_salvataggi()
 RETURNS TRIGGER AS
 $$
     BEGIN
-        UPDATE raccolta SET num_salvataggi = num_salvataggi - 1 WHERE new.raccolta = raccolta.cod_raccolta;
+        UPDATE libreria.raccolta SET num_salvataggi = num_salvataggi - 1 WHERE old.raccolta = raccolta.cod_raccolta;
 
-        RETURN new;
+        RETURN old;
     end;
 
 $$LANGUAGE plpgsql;
@@ -115,14 +115,35 @@ $$
     end
     $$language plpgsql;
 
+
+CREATE OR REPLACE VIEW negozi_serie_complete AS
+SELECT DISTINCT v.negozio, s.nome_serie
+FROM serie AS s NATURAL JOIN vendita AS v
+WHERE NOT EXISTS (
+    SELECT s1.sequel, s1.libro
+    FROM serie AS s1
+    WHERE s1.nome_serie = s.nome_serie
+    AND (sequel NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio)
+    OR libro NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio))
+);
+
+
+
 -- verificare l'integrità di una serie: una serie deve avere tutti i libri disposti in maniera sequenziale
 
 CREATE OR REPLACE TRIGGER b_integrita_serie
-BEFORE INSERT ON serie
+AFTER INSERT ON serie
 FOR EACH ROW
 EXECUTE FUNCTION integrita_serie();
 
+CREATE OR REPLACE TRIGGER a_insert_into_serie
+BEFORE INSERT ON serie
+FOR EACH ROW
+EXECUTE FUNCTION insert_into_serie();
 
+
+--FUNZIONE INTREGRITA' SERIE
+  /*
 CREATE OR REPLACE FUNCTION integrita_serie()
 RETURNS TRIGGER AS $$
     BEGIN
@@ -139,15 +160,7 @@ RETURNS TRIGGER AS $$
     END;
 $$
 language plpgsql;
-
-
-
-
-
-CREATE OR REPLACE TRIGGER a_insert_into_serie
-BEFORE INSERT ON serie
-FOR EACH ROW
-EXECUTE FUNCTION insert_into_serie();
+*/
 
 
 CREATE OR REPLACE FUNCTION insert_into_serie()
@@ -169,6 +182,7 @@ $$ language plpgsql;
 
 
 
+--QUERY PER PRENDERE I NOMI DEI LIBRI IN SERIE--
 SELECT l.titolo AS libro, s.libro AS codice_libro, l2.titolo AS sequel, s.sequel AS codice_sequel, s.nome_serie
 FROM (libreria.serie AS s JOIN libreria.libro l on s.libro = l.isbn) JOIN libreria.libro AS l2 ON s.sequel = l2.isbn
 WHERE s.nome_serie = 'HARRY POTTER';
@@ -181,18 +195,6 @@ WHERE s.nome_serie = 'HARRY POTTER';
 
 
 
-CREATE OR REPLACE VIEW negozi_serie_complete AS
-SELECT DISTINCT v.negozio, s.nome_serie
-FROM serie as s NATURAL JOIN vendita as v
-WHERE NOT EXISTS (
-    SELECT s1.sequel, s1.libro
-    FROM serie as s1
-    WHERE s1.nome_serie = s.nome_serie
-    AND (sequel NOT IN (SELECT libro FROM Vendita as v1 WHERE v1.negozio = v.negozio)
-    OR libro NOT IN (SELECT libro FROM Vendita as v1 WHERE v1.negozio = v.negozio))
-);
-
-
 
 -- COSE DA FARE:
 -- 1) INSERIRE LA POSSIBILITA DI AGGIUNGERE UNA SERIE IN TESTA O NEL MEZZO E AGGIUNGERE RELATIVE MODIFICHE
@@ -202,7 +204,6 @@ WHERE NOT EXISTS (
                                         -- -ELIMINARE UNA RIVISTA SE VUOTA
                                         -- -ELIMINARE UN NEGOZIO SE NON VENDE NIENTE
                                         -- -ELIMINARE UN AUTORE SE NON HA SCRITTO LIBRI
-
 
 
 
