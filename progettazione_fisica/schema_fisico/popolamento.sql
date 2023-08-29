@@ -41,9 +41,6 @@ VALUES ('978-90-124-5678-9', 'Environmental Science', 'Wiley', 'digitale', 2021,
 INSERT INTO Libro (ISBN, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo)
 VALUES ('978-01-245-6789-0', '1984', 'Penguin Books', 'cartaceo', 1949, 'copertina10.jpg', 'A dystopian novel by George Orwell...', 'Dystopian Fiction', 'Science fiction enthusiasts', NULL, 'romanzo');
 
-
-
-
 -- Inserimento di 5 tuple nella tabella utente
 INSERT INTO Utente (nickname, email, password, nome, cognome, data_nascita)
 VALUES ('coolkid123', 'cool@gmail.com', '12345', 'John', 'Pork', '02-02-1922');
@@ -295,3 +292,37 @@ VALUES (1,4),
 (5,28),
 (5,29),
 (5,30);
+
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-34-568-9012-3', 'Introduction to Physics', 'Pearson', 'digitale', 2020, 'copertina3.jpg', 'This book provides an introduction to the principles of physics...', null, 'Physics students', 'Physics', 'didattico');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-45-678-0123-4', 'The History of Art', 'Thames & Hudson', 'cartaceo', 2018, 'copertina4.jpg', 'Explore the fascinating history of art...', null, 'Art enthusiasts', 'Art History', 'didattico');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-56-780-1234-5', 'Python Programming for Beginners', 'O Reilly', 'digitale', 2022, 'copertina5.jpg', 'Learn Python programming from scratch...', null, 'Beginners', 'Computer Science', 'didattico');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-78-901-3456-7', 'Chemistry Essentials', 'McGraw Hill', 'digitale', 2019, 'copertina7.jpg', 'This book covers the essential concepts of chemistry...', null, 'Chemistry students', 'Chemistry', 'didattico');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-90-124-5678-9', 'Environmental Science', 'Wiley', 'digitale', 2021, 'copertina9.jpg', 'Learn about environmental issues and solutions...', null, 'Environmental Science students', 'Environmental Science', 'didattico');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-23-456-8901-2', 'Pride and Prejudice', 'Mondadori', 'digitale', 1813, 'copertina2.jpg', 'This is a classic of English literature...', 'Romance', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-67-890-2345-6', 'War and Peace', 'Vintage Classics', 'cartaceo', 1869, 'copertina6.jpg', 'A historical novel by Leo Tolstoy...', 'Historical Fiction', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-01-245-6789-0', '1984', 'Penguin Books', 'cartaceo', 1949, 'copertina10.jpg', 'A dystopian novel by George Orwell...', 'Dystopian Fiction', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-89-023-4567-8', 'Inferno', 'Rizzoli', 'cartaceo', 2013, 'copertina8.jpg', 'The first part of Dante Alighieri Divine Comedy...', 'Epic Poetry', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-56-780-1237-1', 'La compagnia dell''anello', 'Bompiani', 'cartaceo', 1968, 'copertina11.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-67-890-2342-4', 'Le due torri', 'Bompiani', 'cartaceo', 1998, 'copertina12.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-12-345-7890-1', 'Il ritorno del Re', 'Bompiani', 'cartaceo', 1954, 'copertina1.jpg', 'Questo libro Ã¨ un capolavoro della letteratura fantastica...', 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-691-8315-7', 'Harry Potter: La pietra liposofale', 'J.K. Rowling', 'cartaceo', 1997, 'copertina13.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0339-1', 'Harry Potter: La camera dei segreti', 'J.K. Rowling', 'cartaceo', 1998, 'copertina14.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0340-7', 'Harry Potter: Il prigioniero di Azkaban', 'J.K. Rowling', 'cartaceo', 1999, 'copertina15.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0341-4', 'Harry Potter: Il calice di fuoco', 'J.K. Rowling', 'cartaceo', 2000, 'copertina16.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0341-3', 'Harry Potter: Il calice di fuoco', 'J.K. Rowling', 'digitale', 2000, 'copertina16.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-691-8315-5', 'Harry Potter: La pietra liposofale', 'J.K. Rowling', 'digitale', 1997, 'copertina13.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0341-9', 'Harry Potter: L''ordine della fenice', 'J.K. Rowling', 'cartaceo', 2003, 'copertina16.jpg', null, 'Fantasy', null, null, 'romanzo');
+INSERT INTO libro (isbn, titolo, editore, modalita_fruizione, anno_pubblicazione, copertina, descrzione, genere, target, materia, tipo) VALUES ('978-88-310-0294-5', 'Harry Potter: Il principe mezzo sangue', 'J.K. Rowling', 'cartaceo', 2005, 'copertina16.jpg', null, 'Fantasy', null, null, 'romanzo');
+
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-01-245-6789-0', '978-88-310-0341-4', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-45-678-0123-4', '978-88-310-0339-1', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-67-890-2345-6', '978-88-691-8315-7', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-310-0294-5', '978-67-890-2345-6', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-310-0339-1', '978-89-023-4567-8', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-310-0340-7', '978-01-245-6789-0', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-310-0341-4', '978-88-310-0341-9', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-310-0341-9', '978-88-310-0294-5', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-88-691-8315-7', '978-45-678-0123-4', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-89-023-4567-8', '978-88-310-0340-7', 'HARRY POTTER');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-56-780-1237-1', '978-67-890-2342-4', 'IL SIGNORE DEGLI ANELLI');
+INSERT INTO serie (libro, sequel, nome_serie) VALUES ('978-67-890-2342-4', '978-12-345-7890-1', 'IL SIGNORE DEGLI ANELLI');
