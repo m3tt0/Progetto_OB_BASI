@@ -143,41 +143,48 @@ EXECUTE FUNCTION insert_into_serie();
 
 
 --FUNZIONE INTREGRITA' SERIE
-  /*
 CREATE OR REPLACE FUNCTION integrita_serie()
 RETURNS TRIGGER AS $$
+    DECLARE
+        first libreria.serie.libro%TYPE;
+        last libreria.serie.sequel%TYPE;
+
     BEGIN
-        IF EXISTS(SELECT * FROM libreria.serie WHERE nome_serie = new.nome_serie)
-            AND (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.sequel = new.libro AND s.nome_serie = new.nome_serie)
-            OR EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = new.sequel AND s.nome_serie = new.nome_serie))
-        THEN
+        IF EXISTS(SELECT * FROM libreria.serie WHERE nome_serie = new.nome_serie) THEN
 
-            rollback;
+            SELECT s.libro INTO first FROM libreria.serie AS s WHERE s.nome_serie = NEW.nome_serie AND s.libro NOT IN (SELECT s1.sequel FROM libreria.serie AS s1 WHERE s1.nome_serie = NEW.nome_serie);
+            SELECT s.sequel INTO last FROM libreria.serie AS s WHERE s.nome_serie = NEW.nome_serie AND s.sequel NOT IN (SELECT s1.libro FROM libreria.serie AS s1 WHERE s1.nome_serie = NEW.nome_serie);
+            raise notice '%' ,first;
+            raise notice '%',last;
+            IF (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = NEW.sequel)) OR (NEW.sequel = first) OR (NEW.libro = last) THEN
+                rollback;
+            END IF;
         END IF;
-
-
         return new;
     END;
 $$
 language plpgsql;
-*/
+
+SELECT *
+FROM integrita_serie();
+
+
+SELECT s.libro FROM libreria.serie AS s WHERE s.nome_serie = 'HARRY POTTER' AND s.libro NOT IN (SELECT s1.sequel FROM libreria.serie AS s1 WHERE s1.nome_serie = 'HARRY POTTER');
+SELECT * FROM libreria.serie AS s WHERE s.nome_serie = 'HARRY POTTER' AND s.sequel NOT IN (SELECT s1.libro FROM libreria.serie AS s1 WHERE s1.nome_serie = 'HARRY POTTER');
+
 
 
 CREATE OR REPLACE FUNCTION insert_into_serie()
 RETURNS TRIGGER AS
 $$
     BEGIN
-        IF EXISTS(SELECT * FROM libreria.serie AS s WHERE new.libro != s.libro AND new.sequel = s.sequel AND new.nome_serie = s.nome_serie) THEN
-            UPDATE libreria.serie SET sequel = new.libro WHERE sequel = new.sequel;
-        END IF;
-
+            IF EXISTS(SELECT * FROM libreria.serie AS s WHERE new.libro != s.libro AND new.sequel = s.sequel AND new.nome_serie = s.nome_serie) THEN
+                UPDATE libreria.serie SET sequel = new.libro WHERE sequel = new.sequel;
+            END IF;
         return new;
 
     end;
 $$ language plpgsql;
-
-
-
 
 
 
