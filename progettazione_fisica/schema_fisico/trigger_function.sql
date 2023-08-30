@@ -189,6 +189,122 @@ $$ language plpgsql;
 
 
 
+
+--ELIMINARE UNA RACCOLTA DI LIBRI SE è VUOTA
+CREATE OR REPLACE FUNCTION remove_raccolta_libro()
+RETURNS TRIGGER AS
+$$
+    DECLARE
+        libri_raccolta record;
+    BEGIN
+        SELECT r.raccolta INTO libri_raccolta FROM libreria.libro_contenuto_raccolta AS r WHERE r.raccolta = OLD.raccolta;
+        if libri_raccolta == NULL THEN
+            DELETE FROM libreria.raccolta AS r WHERE r.cod_raccolta = OLD.raccolta;
+        end if;
+
+    END;
+$$ language plpgsql;
+
+
+
+CREATE OR REPLACE TRIGGER remove_raccolta_libro
+AFTER DELETE ON libreria.libro_contenuto_raccolta
+FOR EACH ROW
+EXECUTE FUNCTION remove_raccolta_libro();
+
+
+
+
+--ELIMINARE UNA RACCOLTA DI ARTICOLI SE è VUOTA
+CREATE OR REPLACE FUNCTION remove_raccolta_articolo()
+RETURNS TRIGGER AS
+$$
+    DECLARE
+        articoli_raccolta record;
+    BEGIN
+        SELECT r.raccolta INTO articoli_raccolta FROM libreria.articolo_contenuto_raccolta AS r WHERE r.raccolta = OLD.raccolta;
+
+        IF articoli_raccolta == NULL THEN
+            DELETE FROM libreria.raccolta AS r WHERE r.cod_raccolta = OLD.raccolta;
+        END IF;
+        RETURN OLD;
+    END;
+$$ language plpgsql;
+
+CREATE OR REPLACE TRIGGER remove_raccolta_articolo
+AFTER DELETE ON libreria.articolo_contenuto_raccolta
+FOR EACH ROW
+EXECUTE FUNCTION remove_raccolta_articolo();
+
+
+
+
+
+--ELIMINARE UNA COLLANA DI LIBRI SE è VUOTA
+CREATE OR REPLACE FUNCTION remove_collana()
+RETURNS TRIGGER AS
+$$
+    DECLARE
+        libri_collana record;
+    BEGIN
+        SELECT c.issn INTO libri_collana FROM libreria.libro_contenuto_collana AS c WHERE c.issn = OLD.issn;
+
+        IF libri_collana == NULL THEN
+            DELETE FROM libreria.collana AS c WHERE c.issn = OLD.issn;
+        END IF;
+        RETURN OLD;
+    END;
+$$ language plpgsql;
+
+CREATE OR REPLACE TRIGGER remove_collana
+AFTER DELETE ON libreria.libro_contenuto_collana
+FOR EACH ROW
+EXECUTE FUNCTION remove_collana();
+
+
+
+
+
+--ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
+CREATE OR REPLACE FUNCTION remove_rivista()
+RETURNS TRIGGER AS
+$$
+    DECLARE
+        articoli_rivista record;
+    BEGIN
+        SELECT r.rivista INTO articoli_rivista FROM libreria.articolo_scientifico_pubblicazione_rivista AS r WHERE r.rivista = OLD.rivista;
+
+        IF articoli_rivista == NULL THEN
+            DELETE FROM libreria.rivista AS r WHERE r.cod_rivista = OLD.rivista;
+        END IF;
+        return OLD;
+    END;
+
+$$ language plpgsql;
+
+CREATE OR REPLACE TRIGGER remove_rivista
+AFTER DELETE ON libreria.articolo_scientifico_pubblicazione_rivista
+FOR EACH ROW
+EXECUTE FUNCTION remove_rivista();
+
+
+
+
+
+
+-- COSE DA FARE:
+-- 1) INSERIRE LA POSSIBILITA DI AGGIUNGERE UNA SERIE IN TESTA O NEL MEZZO E AGGIUNGERE RELATIVE MODIFICHE
+-- 2) AGGIUNGERE NUOVI TRIGGER, TRA CUI:
+                                        -- -ELIMINARE UNA RACCOLTA SE VUOTA ----> FATTO
+                                        -- -ELIMINARE UNA COLLONA SE VUOTA  ----> FATTO
+                                        -- -ELIMINARE UNA RIVISTA SE VUOTA  ----> FATTO
+                                        -- -ELIMINARE UN NEGOZIO SE NON VENDE NIENTE ---->
+                                        -- -ELIMINARE UN AUTORE SE NON HA SCRITTO LIBRI ---
+
+
+
+
+
 --QUERY PER PRENDERE I NOMI DEI LIBRI IN SERIE--
 SELECT l.titolo AS libro, s.libro AS codice_libro, l2.titolo AS sequel, s.sequel AS codice_sequel, s.nome_serie
 FROM (libreria.serie AS s JOIN libreria.libro l on s.libro = l.isbn) JOIN libreria.libro AS l2 ON s.sequel = l2.isbn
@@ -203,14 +319,6 @@ WHERE s.nome_serie = 'HARRY POTTER';
 
 
 
--- COSE DA FARE:
--- 1) INSERIRE LA POSSIBILITA DI AGGIUNGERE UNA SERIE IN TESTA O NEL MEZZO E AGGIUNGERE RELATIVE MODIFICHE
--- 2) AGGIUNGERE NUOVI TRIGGER, TRA CUI:
-                                        -- -ELIMINARE UNA RACCOLTA SE VUOTA
-                                        -- -ELIMINARE UNA COLLONA SE VUOTA
-                                        -- -ELIMINARE UNA RIVISTA SE VUOTA
-                                        -- -ELIMINARE UN NEGOZIO SE NON VENDE NIENTE
-                                        -- -ELIMINARE UN AUTORE SE NON HA SCRITTO LIBRI
 
 
 
