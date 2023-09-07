@@ -117,7 +117,7 @@ $$
 
 
 CREATE OR REPLACE VIEW negozi_serie_complete AS
-SELECT DISTINCT v.negozio, s.nome_serie
+SELECT DISTINCT v.negozio, v.indirizzo, v.url, s.nome_serie
 FROM serie AS s NATURAL JOIN vendita AS v
 WHERE NOT EXISTS (
     SELECT s1.sequel, s1.libro
