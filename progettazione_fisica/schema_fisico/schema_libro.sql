@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
     anno_pubblicazione NUMERIC(4) NOT NULL,
     copertina BYTEA,
-    descrzione VARCHAR,
+    descrizione VARCHAR,
 
     CONSTRAINT Articolo_Scientifico_PK PRIMARY KEY (ISBN)
 );
