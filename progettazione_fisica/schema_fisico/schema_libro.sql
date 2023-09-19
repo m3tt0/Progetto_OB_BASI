@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
     titolo VARCHAR NOT NULL,
     editore VARCHAR NOT NULL,
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
-    anno_pubblicazione SMALLINT NOT NULL,
+    anno_pubblicazione NUMERIC(4) NOT NULL,
     copertina BYTEA,
     descrzione VARCHAR,
 
@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS Notifica
 CREATE TABLE IF NOT EXISTS Raccolta
 (
     cod_raccolta SERIAL NOT NULL,
+    nome_raccolta VARCHAR NOT NULL DEFAULT 'nuova_raccolta',
     num_salvataggi INTEGER NOT NULL DEFAULT 0,
     visibilità BOOLEAN NOT NULL DEFAULT FALSE,
     proprietario SERIAL NOT NULL,
@@ -116,7 +117,7 @@ CREATE TABLE IF NOT EXISTS Rivista
     cod_rivista INTEGER NOT NULL,
     nome VARCHAR NOT NULL,
     argomento VARCHAR NOT NULL,
-    anno_pubblicazione SMALLINT NOT NULL,
+    anno_pubblicazione NUMERIC(4) NOT NULL,
     responsabile VARCHAR NOT NULL,
 
     CONSTRAINT Rivista_PK PRIMARY KEY (cod_rivista)
