@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Libro
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
     anno_pubblicazione NUMERIC(4) NOT NULL,
     copertina BYTEA NOT NULL,
-    descrzione VARCHAR,
+    descrizione VARCHAR,
     genere VARCHAR,
     target VARCHAR,
     materia VARCHAR,
