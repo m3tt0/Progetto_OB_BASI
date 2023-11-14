@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-14T13:17:43.204Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="JFCaaxYKSZarNGhjj5Qw" version="22.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-14T14:12:26.035Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="Yars8QYuB5cuuLsFLahS" version="22.1.0" type="github">
   <diagram name="Pagina-1" id="8HYks7gRs1QabRAI8Ned">
-    <mxGraphModel dx="-697" dy="1595" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-1343" dy="1458" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -598,8 +598,8 @@
         <mxCell id="xbFQzS2vKNCkGiJU2L06-138" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Cod_Raccolta&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="3120" y="-210" width="70" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-139" value="Nome" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="3210" y="-210" width="45" height="10" as="geometry" />
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-139" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;Nome_Raccolta&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="3187.5" y="-210" width="97.5" height="10" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-140" value="Visibilità" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="3280" y="-210" width="50" height="16" as="geometry" />
