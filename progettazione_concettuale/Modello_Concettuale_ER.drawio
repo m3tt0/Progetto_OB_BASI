@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-16T14:43:09.058Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="m8d67WL4IxEyddXFT011" version="22.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-16T15:14:57.294Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="NVPAL5KZro6L_ayyFRZe" version="22.1.0" type="github">
   <diagram name="Pagina-1" id="8HYks7gRs1QabRAI8Ned">
-    <mxGraphModel dx="565" dy="2087" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="61" dy="1878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -766,7 +766,7 @@
             <mxPoint x="3080" y="-760" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-177" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Notifica&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-177" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Notifica&lt;/font&gt;" style="shape=ext;margin=3;double=1;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="2830" y="-980" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-178" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
@@ -1231,7 +1231,7 @@
         <mxCell id="xbFQzS2vKNCkGiJU2L06-295" value="Nome" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="2080" y="-440" width="30" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-296" value="Ricezione" style="rhombus;whiteSpace=wrap;html=1;direction=west;" vertex="1" parent="1">
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-296" value="Ricezione" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="3037.5" y="-816" width="90" height="60" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-297" value="" style="endArrow=none;html=1;rounded=0;exitX=-0.008;exitY=0.152;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.996;entryY=0.891;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="xbFQzS2vKNCkGiJU2L06-177">
