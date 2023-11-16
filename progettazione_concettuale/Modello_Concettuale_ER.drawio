@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-14T18:17:52.929Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="IrWOwYmISZoa8nabHeXF" version="22.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-16T14:43:09.058Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0" etag="m8d67WL4IxEyddXFT011" version="22.1.0" type="github">
   <diagram name="Pagina-1" id="8HYks7gRs1QabRAI8Ned">
-    <mxGraphModel dx="-764" dy="1574" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="565" dy="2087" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1135,7 +1135,7 @@
         <mxCell id="xbFQzS2vKNCkGiJU2L06-266" value="1...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=25;" vertex="1" parent="1">
           <mxGeometry x="2120" y="-77" width="30" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-267" value="1...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=334;" vertex="1" parent="1">
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-267" value="0...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=-25;" vertex="1" parent="1">
           <mxGeometry x="2382.5" y="30" width="30" height="20" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-268" value="1...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=-20;" vertex="1" parent="1">
@@ -1153,7 +1153,7 @@
         <mxCell id="xbFQzS2vKNCkGiJU2L06-271" value="Nome" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="2897.5" y="286" width="55" height="11" as="geometry" />
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-272" value="0...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-272" value="0...1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="2710" y="209.5" width="20" height="17" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-273" value="0...1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -1204,7 +1204,7 @@
         <mxCell id="xbFQzS2vKNCkGiJU2L06-288" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="2950" y="-940" width="10" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="xbFQzS2vKNCkGiJU2L06-289" value="1...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=40;" vertex="1" parent="1">
+        <mxCell id="xbFQzS2vKNCkGiJU2L06-289" value="0...*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=40;" vertex="1" parent="1">
           <mxGeometry x="3190" y="-680" width="20" height="13.5" as="geometry" />
         </mxCell>
         <mxCell id="xbFQzS2vKNCkGiJU2L06-290" value="" style="endArrow=none;html=1;rounded=0;exitX=0.331;exitY=-0.05;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="xbFQzS2vKNCkGiJU2L06-291">
