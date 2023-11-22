@@ -154,8 +154,8 @@ RETURNS TRIGGER AS $$
 
             SELECT s.libro INTO first FROM libreria.serie AS s WHERE s.nome_serie = NEW.nome_serie AND s.libro NOT IN (SELECT s1.sequel FROM libreria.serie AS s1 WHERE s1.nome_serie = NEW.nome_serie);
             SELECT s.sequel INTO last FROM libreria.serie AS s WHERE s.nome_serie = NEW.nome_serie AND s.sequel NOT IN (SELECT s1.libro FROM libreria.serie AS s1 WHERE s1.nome_serie = NEW.nome_serie);
-            raise notice '%' ,first;
-            raise notice '%',last;
+            --raise notice '%' ,first;
+            --raise notice '%',last;
             IF (NOT EXISTS(SELECT * FROM libreria.serie AS s WHERE s.libro = NEW.sequel)) OR (NEW.sequel = first) OR (NEW.libro = last) THEN
                 rollback;
             END IF;
@@ -165,15 +165,7 @@ RETURNS TRIGGER AS $$
 $$
 language plpgsql;
 
-SELECT *
-FROM integrita_serie();
-
-
-SELECT s.libro FROM libreria.serie AS s WHERE s.nome_serie = 'HARRY POTTER' AND s.libro NOT IN (SELECT s1.sequel FROM libreria.serie AS s1 WHERE s1.nome_serie = 'HARRY POTTER');
-SELECT * FROM libreria.serie AS s WHERE s.nome_serie = 'HARRY POTTER' AND s.sequel NOT IN (SELECT s1.libro FROM libreria.serie AS s1 WHERE s1.nome_serie = 'HARRY POTTER');
-
-
-
+--TRIGGER CHE TI PERMETTE DI INSERIRE I LIBRI ANCHE NEL MEZZO DI UNA SERIE
 CREATE OR REPLACE FUNCTION insert_into_serie()
 RETURNS TRIGGER AS
 $$
@@ -240,18 +232,19 @@ EXECUTE FUNCTION remove_raccolta_articolo();
 
 
 
---ELIMINARE UNA COLLANA DI LIBRI SE è VUOTA
+--ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
 CREATE OR REPLACE FUNCTION remove_collana()
 RETURNS TRIGGER AS
 $$
     DECLARE
-        libri_collana record;
+        libri_collana INTEGER;
     BEGIN
-        SELECT c.issn INTO libri_collana FROM libreria.libro_contenuto_collana AS c WHERE c.issn = OLD.issn;
+        SELECT COUNT(*) INTO libri_collana FROM libreria.libro_contenuto_collana AS c WHERE c.issn = OLD.issn;
 
-        IF libri_collana == NULL THEN
+        IF libri_collana < 2 THEN
             DELETE FROM libreria.collana AS c WHERE c.issn = OLD.issn;
         END IF;
+
         RETURN OLD;
     END;
 $$ language plpgsql;
@@ -260,7 +253,6 @@ CREATE OR REPLACE TRIGGER remove_collana
 AFTER DELETE ON libreria.libro_contenuto_collana
 FOR EACH ROW
 EXECUTE FUNCTION remove_collana();
-
 
 
 
@@ -286,6 +278,60 @@ CREATE OR REPLACE TRIGGER remove_rivista
 AFTER DELETE ON libreria.articolo_scientifico_pubblicazione_rivista
 FOR EACH ROW
 EXECUTE FUNCTION remove_rivista();
+
+
+
+CREATE OR REPLACE FUNCTION check_editore_in_collana()
+RETURNS TRIGGER AS
+$$
+    DECLARE
+        editore_libro libreria.Libro.editore%TYPE;
+        editore_collana libreria.collana.editore%TYPE;
+    BEGIN
+        SELECT l.editore INTO editore_libro FROM libreria.Libro as l WHERE l.isbn = NEW.isbn;
+        SELECT c.editore INTO editore_collana FROM libreria.collana as c WHERE c.issn = NEW.issn;
+
+        IF editore_collana != editore_libro THEN
+            ROLLBACK;
+        END IF;
+
+        RETURN NEW;
+    END;
+$$ language plpgsql;
+
+CREATE OR REPLACE TRIGGER check_editore_collana
+BEFORE INSERT OR UPDATE ON libreria.Libro_Contenuto_Collana
+FOR EACH ROW
+EXECUTE FUNCTION check_editore_in_collana();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
