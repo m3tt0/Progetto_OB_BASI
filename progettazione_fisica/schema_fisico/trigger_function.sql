@@ -5,12 +5,12 @@ EXECUTE FUNCTION store_password();
 
 CREATE OR REPLACE FUNCTION store_password()
 RETURNS TRIGGER AS
-$f$
+$$
     BEGIN
         new.password = sha512(new.password);
         RETURN new;
     END;
-$f$
+$$
 LANGUAGE plpgsql;
 
 
