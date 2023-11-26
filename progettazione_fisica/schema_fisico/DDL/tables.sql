@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS Vendita
 (
     negozio PARTITA_IVA NOT NULL,
     libro ISBN NOT NULL,
-    costo DOUBLE PRECISION,
-    quantità INTEGER DEFAULT 0,
+    costo NUMERIC(14, 2),
+    quantita INTEGER DEFAULT 0,
 
     CONSTRAINT Vendita_PK PRIMARY KEY (negozio, libro),
     CONSTRAINT Negozio_FK FOREIGN KEY (negozio) REFERENCES Negozio (partita_iva) ON UPDATE CASCADE ON DELETE CASCADE,
