@@ -141,6 +141,11 @@ BEFORE INSERT ON serie
 FOR EACH ROW
 EXECUTE FUNCTION insert_into_serie();
 
+CREATE OR REPLACE TRIGGER romanzi_in_serie
+BEFORE INSERT ON serie
+FOR EACH ROW
+EXECUTE FUNCTION only_romanzi_serie();
+
 
 --FUNZIONE INTREGRITA' SERIE
 CREATE OR REPLACE FUNCTION integrita_serie()
@@ -178,6 +183,19 @@ $$
     end;
 $$ language plpgsql;
 
+CREATE OR REPLACE FUNCTION only_romanzi_serie()
+RETURNS TRIGGER AS
+$$
+    BEGIN
+        IF (new.tipo != 'romanzo') THEN
+            rollback;
+        END IF;
+
+        return new;
+    END;
+
+
+$$ language plpgsql;
 
 
 
@@ -278,7 +296,6 @@ CREATE OR REPLACE TRIGGER remove_rivista
 AFTER DELETE ON libreria.articolo_scientifico_pubblicazione_rivista
 FOR EACH ROW
 EXECUTE FUNCTION remove_rivista();
-
 
 
 CREATE OR REPLACE FUNCTION check_editore_in_collana()
