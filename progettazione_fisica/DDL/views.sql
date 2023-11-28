@@ -129,3 +129,20 @@ BEGIN
         );
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE VIEW TopTenRaccolteSalvate AS
+SELECT r.cod_raccolta, r.nome, calcolonumerosalvataggiraccolta(r.cod_raccolta) AS numero_salvataggi
+FROM raccolta AS r
+ORDER BY calcoloNumeroSalvataggiRaccolta(r.cod_raccolta) DESC
+FETCH FIRST 10 ROWS ONLY;
+
+CREATE OR REPLACE VIEW NegoziConSerieComplete AS
+SELECT DISTINCT v.negozio, v.indirizzo, v.url, s.nome_serie
+FROM serie AS s NATURAL JOIN vendita AS v
+WHERE NOT EXISTS (
+    SELECT s1.sequel, s1.libro
+    FROM serie AS s1
+    WHERE s1.nome_serie = s.nome_serie
+    AND (sequel NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio)
+    OR libro NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio))
+);
