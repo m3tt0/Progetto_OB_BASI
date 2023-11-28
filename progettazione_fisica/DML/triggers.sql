@@ -161,200 +161,127 @@ BEGIN
         FROM Libro AS l
         WHERE l.isbn = new.sequel != 'romanzo'))
     THEN
-        ROLLBACK;
+        RAISE EXCEPTION 'Una serie deve essere composta solo da romanzi';
     END IF;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
 
 
-
+CREATE OR REPLACE TRIGGER Remove_Raccolta_Libro
+AFTER DELETE ON Libro_Contenuto_Raccolta
+FOR EACH ROW
+EXECUTE FUNCTION removeRaccoltaLibro();
 
 --ELIMINARE UNA RACCOLTA DI LIBRI SE è VUOTA
-CREATE OR REPLACE FUNCTION remove_raccolta_libro()
+CREATE OR REPLACE FUNCTION removeRaccoltaLibro()
 RETURNS TRIGGER AS
 $$
-    DECLARE
-        libri_raccolta record;
-    BEGIN
-        SELECT r.raccolta INTO libri_raccolta FROM libreria.libro_contenuto_raccolta AS r WHERE r.raccolta = OLD.raccolta;
-        if libri_raccolta == NULL THEN
-            DELETE FROM libreria.raccolta AS r WHERE r.cod_raccolta = OLD.raccolta;
-        end if;
-    END;
-$$ language plpgsql;
+DECLARE
+    libri_raccolta RECORD;
+BEGIN
+    SELECT r.raccolta INTO libri_raccolta FROM Libro_Contenuto_Raccolta AS r WHERE r.raccolta = old.raccolta;
+    IF libri_raccolta == NULL THEN
+        DELETE FROM Raccolta AS r WHERE r.cod_raccolta = old.raccolta;
+    END IF;
+    RETURN old;
+END;
+$$
+LANGUAGE plpgsql;
 
 
-
-CREATE OR REPLACE TRIGGER remove_raccolta_libro
-AFTER DELETE ON libreria.libro_contenuto_raccolta
+CREATE OR REPLACE TRIGGER Remove_Raccolta_Articolo
+AFTER DELETE ON Articolo_Contenuto_Raccolta
 FOR EACH ROW
-EXECUTE FUNCTION remove_raccolta_libro();
-
-
-
+EXECUTE FUNCTION removeRaccoltaArticolo();
 
 --ELIMINARE UNA RACCOLTA DI ARTICOLI SE è VUOTA
-CREATE OR REPLACE FUNCTION remove_raccolta_articolo()
+CREATE OR REPLACE FUNCTION removeRaccoltaArticolo()
 RETURNS TRIGGER AS
 $$
-    DECLARE
-        articoli_raccolta record;
-    BEGIN
-        SELECT r.raccolta INTO articoli_raccolta FROM libreria.articolo_contenuto_raccolta AS r WHERE r.raccolta = OLD.raccolta;
+DECLARE
+    articoli_raccolta record;
+BEGIN
+    SELECT r.raccolta INTO articoli_raccolta FROM Articolo_Contenuto_Raccolta AS r WHERE r.raccolta = old.raccolta;
 
-        IF articoli_raccolta == NULL THEN
-            DELETE FROM libreria.raccolta AS r WHERE r.cod_raccolta = OLD.raccolta;
-        END IF;
-        RETURN OLD;
-    END;
-$$ language plpgsql;
+    IF articoli_raccolta == NULL THEN
+        DELETE FROM Raccolta AS r WHERE r.cod_raccolta = old.raccolta;
+    END IF;
+    RETURN old;
+END;
+$$
+LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER remove_raccolta_articolo
-AFTER DELETE ON libreria.articolo_contenuto_raccolta
+
+CREATE OR REPLACE TRIGGER Remove_Collana
+AFTER DELETE ON Libro_Contenuto_Collana
 FOR EACH ROW
-EXECUTE FUNCTION remove_raccolta_articolo();
-
-
-
-
+EXECUTE FUNCTION removeCollana();
 
 --ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
-CREATE OR REPLACE FUNCTION remove_collana()
+CREATE OR REPLACE FUNCTION removeCollana()
 RETURNS TRIGGER AS
 $$
-    DECLARE
-        libri_collana INTEGER;
-    BEGIN
-        SELECT COUNT(*) INTO libri_collana FROM libreria.libro_contenuto_collana AS c WHERE c.issn = OLD.issn;
+DECLARE
+    libri_collana INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO libri_collana FROM Libro_Contenuto_Collana AS c WHERE c.issn = old.issn;
 
-        IF libri_collana < 2 THEN
-            DELETE FROM libreria.collana AS c WHERE c.issn = OLD.issn;
-        END IF;
+    IF libri_collana < 2 THEN
+        DELETE FROM Collana AS c WHERE c.issn = old.issn;
+    END IF;
+    RETURN old;
+END;
+$$
+LANGUAGE plpgsql;
 
-        RETURN OLD;
-    END;
-$$ language plpgsql;
 
-CREATE OR REPLACE TRIGGER remove_collana
-AFTER DELETE ON libreria.libro_contenuto_collana
+
+CREATE OR REPLACE TRIGGER Remove_Rivista
+AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
 FOR EACH ROW
-EXECUTE FUNCTION remove_collana();
-
-
-
+EXECUTE FUNCTION removeRivista();
 
 --ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
-CREATE OR REPLACE FUNCTION remove_rivista()
+CREATE OR REPLACE FUNCTION removeRivista()
 RETURNS TRIGGER AS
 $$
-    DECLARE
-        articoli_rivista record;
-    BEGIN
-        SELECT r.rivista INTO articoli_rivista FROM libreria.articolo_scientifico_pubblicazione_rivista AS r WHERE r.rivista = OLD.rivista;
+DECLARE
+    articoli_rivista RECORD;
+BEGIN
+    SELECT r.rivista INTO articoli_rivista FROM Articolo_Scientifico_Pubblicazione_Rivista AS r WHERE r.rivista = old.rivista;
 
-        IF articoli_rivista == NULL THEN
-            DELETE FROM libreria.rivista AS r WHERE r.cod_rivista = OLD.rivista;
-        END IF;
-        return OLD;
-    END;
+    IF articoli_rivista == NULL THEN
+        DELETE FROM Rivista AS r WHERE r.cod_rivista = old.rivista;
+    END IF;
+    return old;
+END;
+$$
+LANGUAGE plpgsql;
 
-$$ language plpgsql;
 
-CREATE OR REPLACE TRIGGER remove_rivista
-AFTER DELETE ON libreria.articolo_scientifico_pubblicazione_rivista
+CREATE OR REPLACE TRIGGER Check_Editore_Collana
+BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
 FOR EACH ROW
-EXECUTE FUNCTION remove_rivista();
+EXECUTE FUNCTION checkEditoreInCollana();
 
-
-CREATE OR REPLACE FUNCTION check_editore_in_collana()
+CREATE OR REPLACE FUNCTION checkEditoreInCollana()
 RETURNS TRIGGER AS
 $$
-    DECLARE
-        editore_libro libreria.Libro.editore%TYPE;
-        editore_collana libreria.collana.editore%TYPE;
-    BEGIN
-        SELECT l.editore INTO editore_libro FROM libreria.Libro as l WHERE l.isbn = NEW.isbn;
-        SELECT c.editore INTO editore_collana FROM libreria.collana as c WHERE c.issn = NEW.issn;
+DECLARE
+    editore_libro Libro.editore%TYPE;
+    editore_collana Collana.editore%TYPE;
+BEGIN
+    SELECT l.editore INTO editore_libro FROM Libro as l WHERE l.isbn = new.isbn;
+    SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.issn;
 
-        IF editore_collana != editore_libro THEN
-            ROLLBACK;
-        END IF;
-
-        RETURN NEW;
-    END;
-$$ language plpgsql;
-
-CREATE OR REPLACE TRIGGER check_editore_collana
-BEFORE INSERT OR UPDATE ON libreria.Libro_Contenuto_Collana
-FOR EACH ROW
-EXECUTE FUNCTION check_editore_in_collana();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- COSE DA FARE:
--- 1) INSERIRE LA POSSIBILITA DI AGGIUNGERE UNA SERIE IN TESTA O NEL MEZZO E AGGIUNGERE RELATIVE MODIFICHE
--- 2) AGGIUNGERE NUOVI TRIGGER, TRA CUI:
-                                        -- -ELIMINARE UNA RACCOLTA SE VUOTA ----> FATTO
-                                        -- -ELIMINARE UNA COLLONA SE VUOTA  ----> FATTO
-                                        -- -ELIMINARE UNA RIVISTA SE VUOTA  ----> FATTO
-                                        -- -ELIMINARE UN NEGOZIO SE NON VENDE NIENTE ---->
-                                        -- -ELIMINARE UN AUTORE SE NON HA SCRITTO LIBRI ---
-
-
-
-
-
---QUERY PER PRENDERE I NOMI DEI LIBRI IN SERIE--
-SELECT l.titolo AS libro, s.libro AS codice_libro, l2.titolo AS sequel, s.sequel AS codice_sequel, s.nome
-FROM (libreria.serie AS s JOIN libreria.libro l on s.libro = l.isbn) JOIN libreria.libro AS l2 ON s.sequel = l2.isbn
-WHERE s.nome = 'HARRY POTTER';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    IF editore_collana != editore_libro THEN
+        RAISE EXCEPTION 'Una collana non può avere editori diversi';
+    END IF;
+    RETURN new;
+END;
+$$
+LANGUAGE plpgsql;
 
 
 
