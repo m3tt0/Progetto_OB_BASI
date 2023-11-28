@@ -87,3 +87,39 @@ BEGIN
     );
 END;
 $$
+
+CREATE OR REPLACE FUNCTION LibriInSala(sala Sala.cod_sala%type)
+RETURNS SETOF Negozio AS
+$$
+BEGIN
+    RETURN QUERY(
+        SELECT isbn, titolo
+        FROM Libro AS l JOIN Presentazione_Libro AS p ON l.isbn = p.libro
+        WHERE p.sala = sala;
+    );
+END;
+$$
+
+CREATE OR REPLACE FUNCTION LibriInCollana(collana Collana.issn%type)
+RETURNS SETOF Negozio AS
+$$
+BEGIN
+    RETURN QUERY(
+        SELECT isbn, titolo
+        FROM Libro AS l JOIN Libro_Contenuto_Collana AS col ON col.libro = l.isbn
+        WHERE col.collana = collana;
+    );
+END;
+$$
+
+CREATE OR REPLACE FUNCTION LibriInSerie(serie Serie.nome%type)
+RETURNS SETOF Libro AS
+$$
+BEGIN
+        RETURN QUERY(
+            SELECT isbn, titolo
+            FROM Libro AS l JOIN Serie AS s ON (s.sequel=l.isbn OR s.prequel=l.isbn)
+            WHERE s.nome = serie
+        );
+END;
+$$
