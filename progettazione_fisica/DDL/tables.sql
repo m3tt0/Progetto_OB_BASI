@@ -207,8 +207,8 @@ CREATE TABLE IF NOT EXISTS Notifica
 CREATE TABLE IF NOT EXISTS Raccolta
 (
     cod_raccolta SERIAL NOT NULL,
-    nome VARCHAR NOT NULL DEFAULT 'nuova_raccolta',
-    visibilita VISIBILITA NOT NULL DEFAULT FALSE,
+    nome VARCHAR DEFAULT 'nuova_raccolta',
+    visibilita VISIBILITA NOT NULL,
     proprietario USERNAME NOT NULL,
 
     CONSTRAINT Raccolta_PK PRIMARY KEY (cod_raccolta),
