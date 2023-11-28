@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS Utente
     data_nascita DATE NOT NULL,
     amministratore BOOL NOT NULL DEFAULT FALSE,
 
-    CONSTRAINT Utente_PK PRIMARY KEY (username),
+    CONSTRAINT Utente_PK PRIMARY KEY (username)
 );
 
 CREATE TABLE IF NOT EXISTS Notifica
