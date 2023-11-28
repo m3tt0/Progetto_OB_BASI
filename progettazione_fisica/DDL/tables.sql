@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS Vendita
 (
     negozio PARTITA_IVA NOT NULL,
     libro ISBN NOT NULL,
-    costo NUMERIC(14, 2),
+    costo NUMERIC(14, 2) NOT NULL,
     quantita INTEGER DEFAULT 0,
 
     CONSTRAINT Vendita_PK PRIMARY KEY (negozio, libro),
