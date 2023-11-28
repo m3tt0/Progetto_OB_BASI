@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
     editore VARCHAR NOT NULL,
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
     anno_pubblicazione NUMERIC(4) NOT NULL,
-    copertina BYTEA,
+    copertina BYTEA NOT NULL,
     descrizione VARCHAR,
 
     CONSTRAINT Articolo_Scientifico_PK PRIMARY KEY (doi)
