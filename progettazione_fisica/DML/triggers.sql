@@ -285,3 +285,25 @@ LANGUAGE plpgsql;
 
 
 
+CREATE OR REPLACE TRIGGER Coerenza_Vendite
+BEFORE INSERT OR UPDATE ON Vendita
+FOR EACH ROW
+EXECUTE FUNCTION coerenzaVendite();
+
+CREATE OR REPLACE FUNCTION coerenzaVendite()
+RETURNS TRIGGER AS
+$$
+DECLARE
+    current_negozio RECORD;
+    tipo_libro Libro.modalita_fruizione%TYPE;
+BEGIN
+    SELECT * INTO current_negozio FROM Negozio AS n WHERE n.partita_iva = new.negozio;
+    SELECT l.modalita_fruizione INTO tipo_libro FROM Libro AS l WHERE l.isbn = new.libro;
+
+    IF current_negozio.indirizzo IS NOT NULL AND current_negozio.url IS NULL AND tipo_libro != 'cartaceo' THEN
+        RAISE EXCEPTION 'Un negozio fisico non può vendere libri digitali o audiolibri';
+    END IF;
+    RETURN new;
+END
+$$
+LANGUAGE plpgsql;
