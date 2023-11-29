@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico_Pubblicazione_Rivista
 
     CONSTRAINT Pubblicazione_PK PRIMARY KEY (rivista, articolo_scientifico),
     CONSTRAINT Articolo_Scientifico_FK FOREIGN KEY (articolo_scientifico) REFERENCES Articolo_Scientifico(doi) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(cod_rivista) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT Rivista_FK FOREIGN KEY (rivista) REFERENCES Rivista(issn) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Conferenza
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS Negozio
     url VARCHAR,
 
     CONSTRAINT Negozio_PK PRIMARY KEY (partita_iva),
-    CONSTRAINT Validita_Negozio CHECK (indirizzo != NULL OR url != NULL)
+    CONSTRAINT Validita_Negozio CHECK (indirizzo IS NOT NULL OR url IS NOT NULL)
 );
 
 CREATE TABLE IF NOT EXISTS Vendita

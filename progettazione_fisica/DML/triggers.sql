@@ -26,11 +26,11 @@ DECLARE
     data_inizio_conferenza Conferenza.data_inizio%TYPE;
     data_fine_conferenza Conferenza.data_fine%TYPE;
 BEGIN
-    SELECT c.data_inizio INTO data_inizio_conferenza FROM Conferenza AS c WHERE new.codice_conferenza = c.codice_conferenza;
-    SELECT c.data_fine INTO data_fine_conferenza FROM Conferenza AS c WHERE new.codice_conferenza = c.codice_conferenza;
+    SELECT c.data_inizio INTO data_inizio_conferenza FROM Conferenza AS c WHERE new.conferenza = c.cod_conferenza;
+    SELECT c.data_fine INTO data_fine_conferenza FROM Conferenza AS c WHERE new.conferenza = c.cod_conferenza;
     IF new.data_presentazione < data_inizio_conferenza THEN
         RAISE EXCEPTION 'Non è possibile inserire una data presentazione prima della data di inizio di una conferenza';
-    ELSIF new.data_presentazione > data_inizio_conferenza THEN
+    ELSIF new.data_presentazione > data_fine_conferenza THEN
         RAISE EXCEPTION 'Non è possibile inserire una data presentazione dopo la data di fine di una conferenza';
     END IF;
     RETURN new;
@@ -98,7 +98,7 @@ BEGIN
         FROM Serie AS s
         WHERE s.nome = new.nome
         AND s.sequel NOT IN (
-            SELECT s1.libro
+            SELECT s1.prequel
             FROM Serie AS s1
             WHERE s1.nome = new.nome
         );
@@ -156,15 +156,15 @@ $$
 BEGIN
     IF ((SELECT l.tipo
         FROM Libro AS l
-        WHERE l.isbn = new.prequel != 'romanzo') AND
+        WHERE l.isbn = new.prequel) != 'romanzo' AND
         (SELECT l.tipo
         FROM Libro AS l
-        WHERE l.isbn = new.sequel != 'romanzo'))
+        WHERE l.isbn = new.sequel) != 'romanzo')
     THEN
         RAISE EXCEPTION 'Una serie deve essere composta solo da romanzi';
     END IF;
     RETURN new;
-END;
+END; --NON CAPISCO CHE ERRORE CI SIA--
 $$ LANGUAGE plpgsql;
 
 
@@ -225,10 +225,10 @@ $$
 DECLARE
     libri_collana INTEGER;
 BEGIN
-    SELECT COUNT(*) INTO libri_collana FROM Libro_Contenuto_Collana AS c WHERE c.issn = old.issn;
+    SELECT COUNT(*) INTO libri_collana FROM Libro_Contenuto_Collana AS c WHERE c.collana = old.collana;
 
     IF libri_collana < 2 THEN
-        DELETE FROM Collana AS c WHERE c.issn = old.issn;
+        DELETE FROM Collana AS c WHERE c.issn = old.collana;
     END IF;
     RETURN old;
 END;
@@ -252,7 +252,7 @@ BEGIN
     SELECT r.rivista INTO articoli_rivista FROM Articolo_Scientifico_Pubblicazione_Rivista AS r WHERE r.rivista = old.rivista;
 
     IF articoli_rivista == NULL THEN
-        DELETE FROM Rivista AS r WHERE r.cod_rivista = old.rivista;
+        DELETE FROM Rivista AS r WHERE r.issn = old.rivista;
     END IF;
     return old;
 END;
@@ -272,8 +272,8 @@ DECLARE
     editore_libro Libro.editore%TYPE;
     editore_collana Collana.editore%TYPE;
 BEGIN
-    SELECT l.editore INTO editore_libro FROM Libro as l WHERE l.isbn = new.isbn;
-    SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.issn;
+    SELECT l.editore INTO editore_libro FROM Libro as l WHERE l.isbn = new.libro;
+    SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.libro;
 
     IF editore_collana != editore_libro THEN
         RAISE EXCEPTION 'Una collana non può avere editori diversi';
