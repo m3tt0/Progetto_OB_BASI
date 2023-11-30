@@ -14,4 +14,4 @@ CREATE DOMAIN partita_iva AS CHAR(11)
     CHECK (VALUE ~ '^\d{11}$');
 
 CREATE DOMAIN username AS VARCHAR
-    CHECK (VALUE ~ '^[a-z0-9_]+([.][a-z0-9_]+)*$' AND VALUE !~ '_+');
+    CHECK (VALUE ~ '^[a-z0-9_]+([.][a-z0-9_]+)*$' AND VALUE !~ '_+'); --^[a-z0-9]+([._][a-z0-9]+)*$ AGGIORNATO COSì PER TESTINTG--

@@ -179,9 +179,12 @@ RETURNS TRIGGER AS
 $$
 DECLARE
     libri_raccolta RECORD;
+    articoli_raccolta RECORD;
 BEGIN
     SELECT r.raccolta INTO libri_raccolta FROM Libro_Contenuto_Raccolta AS r WHERE r.raccolta = old.raccolta;
-    IF libri_raccolta == NULL THEN
+    SELECT a.raccolta INTO articoli_raccolta FROM Articolo_Contenuto_Raccolta AS a WHERE a.raccolta = old.raccolta;
+
+    IF libri_raccolta IS NULL AND articoli_raccolta IS NULL THEN
         DELETE FROM Raccolta AS r WHERE r.cod_raccolta = old.raccolta;
     END IF;
     RETURN old;
@@ -200,11 +203,14 @@ CREATE OR REPLACE FUNCTION removeRaccoltaArticolo()
 RETURNS TRIGGER AS
 $$
 DECLARE
-    articoli_raccolta record;
-BEGIN
-    SELECT r.raccolta INTO articoli_raccolta FROM Articolo_Contenuto_Raccolta AS r WHERE r.raccolta = old.raccolta;
 
-    IF articoli_raccolta == NULL THEN
+    articoli_raccolta RECORD;
+    libri_raccolta RECORD;
+BEGIN
+    SELECT r.raccolta INTO libri_raccolta FROM Libro_Contenuto_Raccolta AS r WHERE r.raccolta = old.raccolta;
+    SELECT a.raccolta INTO articoli_raccolta FROM Articolo_Contenuto_Raccolta AS a WHERE a.raccolta = old.raccolta;
+
+    IF articoli_raccolta IS NULL AND libri_raccolta IS NULL THEN
         DELETE FROM Raccolta AS r WHERE r.cod_raccolta = old.raccolta;
     END IF;
     RETURN old;
@@ -273,7 +279,7 @@ DECLARE
     editore_collana Collana.editore%TYPE;
 BEGIN
     SELECT l.editore INTO editore_libro FROM Libro as l WHERE l.isbn = new.libro;
-    SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.libro;
+    SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.collana;
 
     IF editore_collana != editore_libro THEN
         RAISE EXCEPTION 'Una collana non può avere editori diversi';
