@@ -341,15 +341,15 @@ VALUES
 
 ('9780345340429', 'Il Signore degli Anelli: Il Silmarillion', 'Ballantine Books', 'digitale', 1977, NULL, 'Opera postuma di J.R.R. Tolkien', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780142401209', 'Il Signore degli Anelli: Lo Hobbit', 'Ballantine Books', 'digitale', 1954, NULL, 'Un classico fantasy epico', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780142401208', 'Il Signore degli Anelli: Lo Hobbit', 'Ballantine Books', 'digitale', 1954, NULL, 'Un classico fantasy epico', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780345339706', $a$Il Signore degli Anelli: La Compagnia dell'Anello$a$, 'Ballantine Books', 'cartaceo', 1954, NULL, 'Primo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780345339705', $a$Il Signore degli Anelli: La Compagnia dell'Anello$a$, 'Ballantine Books', 'cartaceo', 1954, NULL, 'Primo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780345339713', 'Il Signore degli Anelli: Le Due Torri', 'Ballantine Books', 'cartaceo', 1954, NULL, 'Secondo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780345339712', 'Il Signore degli Anelli: Le Due Torri', 'Ballantine Books', 'cartaceo', 1954, NULL, 'Secondo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780345339720', 'Il Signore degli Anelli: Il Ritorno del Re', 'Ballantine Books', 'digitale', 1955, NULL, 'Terzo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780345339721', 'Il Signore degli Anelli: Il Ritorno del Re', 'Ballantine Books', 'digitale', 1955, NULL, 'Terzo volume della serie', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780345340429', 'Il Signore degli Anelli: Il Silmarillion', 'Ballantine Books', 'cartaceo', 1977, NULL, 'Opera postuma di J.R.R. Tolkien', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780345340428', 'Il Signore degli Anelli: Il Silmarillion', 'Ballantine Books', 'cartaceo', 1977, NULL, 'Opera postuma di J.R.R. Tolkien', 'Fantasy', NULL, NULL, 'romanzo'),
 
 ('9780553386790', 'Fondazione', 'Mondadori', 'digitale', 1951, NULL, 'Un capolavoro di fantascienza', 'Fantascienza', NULL, NULL, 'romanzo'),
 
@@ -403,19 +403,19 @@ VALUES
 
 ('9780747591061', 'Harry Potter e i Doni della Morte', 'Salani', 'cartaceo', 2007, NULL, 'Il settimo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747532743', 'Harry Potter e la Pietra Filosofale', 'Salani', 'digitale', 1997, NULL, 'Il primo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747532742', 'Harry Potter e la Pietra Filosofale', 'Salani', 'digitale', 1997, NULL, 'Il primo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747538493', 'Harry Potter e la Camera dei Segreti', 'Salani', 'cartaceo', 1998, NULL, 'Il secondo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747538492', 'Harry Potter e la Camera dei Segreti', 'Salani', 'cartaceo', 1998, NULL, 'Il secondo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747543350', 'Harry Potter e il Prigioniero di Azkaban', 'Salani', 'digitale', 1999, NULL, 'Il terzo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747543351', 'Harry Potter e il Prigioniero di Azkaban', 'Salani', 'digitale', 1999, NULL, 'Il terzo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747545118', 'Harry Potter e il Calice di Fuoco', 'Salani', 'cartaceo', 2000, NULL, 'Il quarto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747545117', 'Harry Potter e il Calice di Fuoco', 'Salani', 'cartaceo', 2000, NULL, 'Il quarto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747570738', $a$Harry Potter e l'Ordine della Fenice$a$, 'Salani', 'digitale', 2003, NULL, 'Il quinto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747570737', $a$Harry Potter e l'Ordine della Fenice$a$, 'Salani', 'digitale', 2003, NULL, 'Il quinto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747584681', 'Harry Potter e il Principe Mezzosangue', 'Salani', 'cartaceo', 2005, NULL, 'Il sesto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
+('9780747584680', 'Harry Potter e il Principe Mezzosangue', 'Salani', 'cartaceo', 2005, NULL, 'Il sesto libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo'),
 
-('9780747591061', 'Harry Potter e i Doni della Morte', 'Salani', 'digitale', 2007, NULL, 'Il settimo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo');
+('9780747591060', 'Harry Potter e i Doni della Morte', 'Salani', 'digitale', 2007, NULL, 'Il settimo libro della serie di Harry Potter', 'Fantasy', NULL, NULL, 'romanzo');
 
 
 
@@ -637,23 +637,23 @@ VALUES
 
 INSERT INTO Libro_Contenuto_Collana (libro, collana)
 VALUES
-('9780142401209', '5678-9012'), -- "Il Signore degli Anelli" nella collana "Mondadori SuperPocket"
+('9788806186615', '5678-9012'), -- "Cent'anni di solitudine" nella collana "Mondadori SuperPocket"
 
 ('9780553386790', '5678-9012'), -- "Fondazione" nella collana "Mondadori SuperPocket"
 
 ('9788804676161', '5678-9012'), -- "1984" nella collana "Mondadori SuperPocket"
 
-('9788879831680', '3456-7890'), -- "Lezioni di Analisi Matematica" nella collana "Zanichelli Saggi"
-
-('9788850327115', '9012-3456'), -- "Programmazione in Java" nella collana "Hoepli Guide"
-
-('9780061120084', '5678-9012'), -- "Norwegian Wood" nella collana "Mondadori SuperPocket"
+('9788804583598', '5678-9012'), -- "Norwegian Wood" nella collana "Mondadori SuperPocket"
 
 ('9788804668234', '5678-9012'), -- "Il codice da Vinci" nella collana "Mondadori SuperPocket"
 
-('9788850333741', '9012-3456'), -- "Algoritmi e Strutture Dati" nella collana "Hoepli Guide"
+('9788879831680', '3456-7890'), -- "Lezioni di Analisi Matematica" nella collana "Zanichelli Saggi"
 
 ('9788848136319', '3456-7890'), -- "Fisica generale" nella collana "Zanichelli Saggi"
+
+('9788850327115', '9012-3456'), -- "Programmazione in Java" nella collana "Hoepli Guide"
+
+('9788850333741', '9012-3456'), -- "Algoritmi e Strutture Dati" nella collana "Hoepli Guide"
 
 ('9780747532743', '1234-567X'), -- "Harry Potter e la Pietra Filosofale" nella collana "Salani Classici"
 

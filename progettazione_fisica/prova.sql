@@ -29,6 +29,8 @@ VALUES
 
 
 
+SELECT *
+FROM LibriInNegozio('55667788990');
 
 
 
