@@ -32,16 +32,35 @@ VALUES
 SELECT *
 FROM LibriInNegozio('55667788990');
 
+SELECT *
+FROM RaccolteDiUtente('alice_smith','alice_smith');
 
+SELECT *
+FROM LibriInRaccolta(7, 'david_thompson');
 
+SELECT *
+FROM ArticoliInRivista('1234-5678');
 
+SELECT *
+FROM ArticoliInConferenza(1);
 
+SELECT *
+FROM LibriDaAutore(3);
 
+SELECT *
+FROM ArticoloDaAutore(1);
 
+SELECT *
+FROM NegoziDaLibro('9788804509955');
 
+SELECT *
+FROM LibriInSala(3);
 
+SELECT *
+FROM LibriInCollana('5678-9012');
 
-
+SELECT *
+FROM LibriInSerie('Saga Harry Potter Cartacea');
 
 
 
