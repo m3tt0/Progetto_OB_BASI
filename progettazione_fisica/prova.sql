@@ -63,4 +63,6 @@ SELECT *
 FROM LibriInSerie('Saga Harry Potter Cartacea');
 
 
+SELECT n.nome, l.titolo, l.modalita_fruizione
+FROM Vendita AS v JOIN Negozio as n ON v.negozio = n.partita_iva JOIN Libro as l ON v.libro = l.isbn;
 

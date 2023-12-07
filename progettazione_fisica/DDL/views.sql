@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION LibriInNegozio(cur_negozio Negozio.partita_iva%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR, costo NUMERIC, quantita INTEGER) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE, costo Vendita.costo%TYPE, quantita Vendita.quantita%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -11,7 +11,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION RaccolteDiUtente(cur_richiedente Utente.username%type, cur_proprietario Utente.username%type)
-RETURNS TABLE (nome VARCHAR) AS
+RETURNS TABLE (nome Raccolta.nome%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -23,7 +23,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION LibriInRaccolta(cur_raccolta Raccolta.cod_raccolta%type, cur_utente Utente.username%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -35,7 +35,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION ArticoliInRivista(cur_rivista Rivista.issn%type)
-RETURNS TABLE (doi DOI, titolo VARCHAR) AS
+RETURNS TABLE (doi Articolo_Scientifico.doi%TYPE, titolo Articolo_Scientifico.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -47,7 +47,7 @@ END;
 $$ LANGUAGE plpgsql;
     
 CREATE OR REPLACE FUNCTION ArticoliInConferenza(cur_conferenza Conferenza.cod_conferenza%type)
-RETURNS TABLE (doi DOI, titolo VARCHAR) AS
+RETURNS TABLE (doi Articolo_Scientifico.doi%TYPE, titolo Articolo_Scientifico.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -59,7 +59,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION LibriDaAutore(cur_autore Autore.cod_autore%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -71,7 +71,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION ArticoloDaAutore(cur_autore Autore.cod_autore%type)
-RETURNS TABLE (doi DOI, titolo VARCHAR) AS
+RETURNS TABLE (doi Articolo_Scientifico.doi%TYPE, titolo Articolo_Scientifico.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -83,7 +83,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION NegoziDaLibro(cur_libro Libro.ISBN%type)
-RETURNS TABLE (partita_iva PARTITA_IVA, nome VARCHAR) AS
+RETURNS TABLE (partita_iva Negozio.partita_iva%TYPE, nome Negozio.nome%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -95,7 +95,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION LibriInSala(cur_sala Sala.cod_sala%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -107,7 +107,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION LibriInCollana(cur_collana Collana.issn%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE) AS
 $$
 BEGIN
     RETURN QUERY(
@@ -119,7 +119,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION LibriInSerie(cur_serie Serie.nome%type)
-RETURNS TABLE (isbn ISBN, titolo VARCHAR) AS
+RETURNS TABLE (isbn Libro.isbn%TYPE, titolo Libro.titolo%TYPE) AS
 $$
 BEGIN
         RETURN QUERY(
