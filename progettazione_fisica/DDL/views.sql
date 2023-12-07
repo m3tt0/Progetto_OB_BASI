@@ -136,6 +136,7 @@ FROM Raccolta AS r
 ORDER BY calcoloNumeroSalvataggiRaccolta(r.cod_raccolta) DESC
 FETCH FIRST 10 ROWS ONLY;
 
+
 CREATE OR REPLACE VIEW NegoziConSerieComplete AS
 SELECT DISTINCT v.negozio, n.indirizzo, n.url, s.nome
 FROM (Serie AS s JOIN Vendita AS v ON s.prequel = v.libro) JOIN Negozio AS n ON v.negozio = n.partita_iva
@@ -143,6 +144,6 @@ WHERE NOT EXISTS (
     SELECT s1.sequel, s1.prequel
     FROM serie AS s1
     WHERE s1.nome = s.nome
-    AND (sequel NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio)
-    OR libro NOT IN (SELECT libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio))
+    AND (s1.sequel NOT IN (SELECT v1.libro FROM Vendita AS v1 WHERE v1.negozio = v.negozio)
+    OR s1.prequel NOT IN (SELECT v2.libro FROM Vendita AS v2 WHERE v2.negozio = v.negozio))
 );
