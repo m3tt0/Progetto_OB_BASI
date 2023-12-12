@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Libro
     editore VARCHAR NOT NULL,
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
     anno_pubblicazione NUMERIC(4) NOT NULL,
-    copertina BYTEA NOT NULL,
+    copertina BYTEA,
     descrizione VARCHAR,
     genere VARCHAR,
     target VARCHAR,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Articolo_Scientifico
     editore VARCHAR NOT NULL,
     modalita_fruizione TIPO_FRUIZIONE NOT NULL,
     anno_pubblicazione NUMERIC(4) NOT NULL,
-    copertina BYTEA NOT NULL,
+    copertina BYTEA,
     descrizione VARCHAR,
 
     CONSTRAINT Articolo_Scientifico_PK PRIMARY KEY (doi)
@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS Vendita
     negozio PARTITA_IVA NOT NULL,
     libro ISBN NOT NULL,
     costo NUMERIC(14, 2) NOT NULL,
-    quantita INTEGER DEFAULT 0,
+    quantita INTEGER NOT NULL DEFAULT 0 CHECK (quantita>= 0),
 
     CONSTRAINT Vendita_PK PRIMARY KEY (negozio, libro),
     CONSTRAINT Negozio_FK FOREIGN KEY (negozio) REFERENCES Negozio (partita_iva) ON UPDATE CASCADE ON DELETE CASCADE,
