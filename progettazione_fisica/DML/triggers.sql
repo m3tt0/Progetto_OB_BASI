@@ -13,22 +13,23 @@ BEFORE INSERT ON Utente
 FOR EACH ROW
 EXECUTE FUNCTION storePassword();
 
+
 CREATE OR REPLACE FUNCTION notificaUtenteSerieComplete()
 RETURNS TRIGGER AS
 $$
 DECLARE
     serie_to_check Serie.nome%TYPE;
-    negozio_con_serie_completa Negozio.nome%TYPE;
+    nome_negozio_con_serie_completa Negozio.nome%TYPE;
     messaggio Notifica.messaggio%TYPE;
     destinatari CURSOR FOR SELECT username FROM Utente;
 BEGIN
     SELECT nome INTO serie_to_check FROM Serie WHERE prequel = new.libro OR sequel = new.libro;
     IF found THEN
-        SELECT nome_negozio INTO negozio_con_serie_completa
+        SELECT nome_negozio INTO nome_negozio_con_serie_completa
         FROM NegoziConSerieComplete
         WHERE partita_iva = new.negozio AND nome_serie = serie_to_check;
         IF found THEN
-            messaggio := format('Il negozio %s (P.IVA: %s) ha disponibile l''intera serie %s', negozio_con_serie_completa, new.negozio, serie_to_check);
+            messaggio := format('Il negozio %s (P.IVA: %s) ha disponibile l''intera serie %s', nome_negozio_con_serie_completa, new.negozio, serie_to_check);
             FOR destinatario IN destinatari LOOP
                 INSERT INTO Notifica VALUES (messaggio, destinatario.username);
             END LOOP;
@@ -44,10 +45,6 @@ AFTER INSERT OR UPDATE OF quantita ON Vendita
 FOR EACH ROW
 EXECUTE FUNCTION notificaUtenteSerieComplete();
 
-CREATE OR REPLACE TRIGGER Check_Data_Presentazione
-BEFORE INSERT OR UPDATE OF data_presentazione ON Presentazione_Articolo
-FOR EACH ROW
-EXECUTE FUNCTION checkDataPresentazione();
 
 CREATE OR REPLACE FUNCTION checkDataPresentazione()
 RETURNS TRIGGER AS
@@ -68,22 +65,22 @@ END;
 $$
 LANGUAGE plpgsql;
 
---ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
-CREATE OR REPLACE TRIGGER Remove_Collana
-AFTER DELETE ON Libro_Contenuto_Collana
+CREATE OR REPLACE TRIGGER Check_Data_Presentazione
+BEFORE INSERT OR UPDATE OF data_presentazione ON Presentazione_Articolo
 FOR EACH ROW
-EXECUTE FUNCTION removeCollana();
+EXECUTE FUNCTION checkDataPresentazione();
+
 
 --ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
 CREATE OR REPLACE FUNCTION removeCollana()
 RETURNS TRIGGER AS
 $$
 DECLARE
-    libri_collana INTEGER;
+    libri_in_collana INTEGER;
 BEGIN
-    SELECT COUNT(*) INTO libri_collana FROM Libro_Contenuto_Collana AS c WHERE c.collana = old.collana;
+    SELECT COUNT(*) INTO libri_in_collana FROM Libro_Contenuto_Collana AS c WHERE c.collana = old.collana;
 
-    IF libri_collana < 2 THEN
+    IF libri_in_collana < 2 THEN
         DELETE FROM Collana AS c WHERE c.issn = old.collana;
     END IF;
     RETURN old;
@@ -91,10 +88,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER Remove_Rivista
-AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
+--ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
+CREATE OR REPLACE TRIGGER Remove_Collana
+AFTER DELETE ON Libro_Contenuto_Collana
 FOR EACH ROW
-EXECUTE FUNCTION removeRivista();
+EXECUTE FUNCTION removeCollana();
+
 
 --ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
 CREATE OR REPLACE FUNCTION removeRivista()
@@ -113,11 +112,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER Check_Editore_Collana
-BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
+--ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
+CREATE OR REPLACE TRIGGER Remove_Rivista
+AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
 FOR EACH ROW
-EXECUTE FUNCTION checkEditoreInCollana();
+EXECUTE FUNCTION removeRivista();
+
 
 CREATE OR REPLACE FUNCTION checkEditoreInCollana()
 RETURNS TRIGGER AS
@@ -130,9 +130,24 @@ BEGIN
     SELECT c.editore INTO editore_collana FROM Collana as c WHERE c.issn = new.collana;
 
     IF editore_collana != editore_libro THEN
-        RAISE EXCEPTION 'Una collana non può avere editori diversi';
+        RAISE EXCEPTION 'I libri facenti parte della stessa collana devono avere lo stesso editore';
     END IF;
     RETURN new;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Check_Editore_Collana
+BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
+FOR EACH ROW
+EXECUTE FUNCTION checkEditoreInCollana();
+
+CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateLibro()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    DELETE FROM Libro_Contenuto_Collana AS lc WHERE lc.libro = old.isbn;
+    RETURN old;
 END;
 $$
 LANGUAGE plpgsql;
@@ -142,27 +157,6 @@ CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Libro
 AFTER UPDATE OF Editore ON Libro
 FOR EACH ROW
 EXECUTE FUNCTION checkEditoreInCollanaUpdateLibro();
-
-CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateLibro()
-RETURNS TRIGGER AS
-$$
-BEGIN
-    IF EXISTS (SELECT lc.libro
-               FROM Libro_Contenuto_Collana AS lc
-               WHERE lc.libro = old.isbn)
-    THEN
-        DELETE FROM Libro_Contenuto_Collana AS lc WHERE lc.libro = old.isbn;
-    END IF;
-    RETURN old;
-END;
-$$
-LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Collana
-AFTER UPDATE OF Editore ON Collana
-FOR EACH ROW
-EXECUTE FUNCTION checkEditoreInCollanaUpdateCollana();
 
 CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateCollana()
 RETURNS TRIGGER AS
@@ -179,10 +173,10 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER Coerenza_Vendite
-BEFORE INSERT OR UPDATE ON Vendita
+CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Collana
+AFTER UPDATE OF Editore ON Collana
 FOR EACH ROW
-EXECUTE FUNCTION coerenzaVendite();
+EXECUTE FUNCTION checkEditoreInCollanaUpdateCollana();
 
 CREATE OR REPLACE FUNCTION coerenzaVendite()
 RETURNS TRIGGER AS
@@ -201,3 +195,8 @@ BEGIN
 END
 $$
 LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Coerenza_Vendite
+BEFORE INSERT OR UPDATE ON Vendita
+FOR EACH ROW
+EXECUTE FUNCTION coerenzaVendite();
