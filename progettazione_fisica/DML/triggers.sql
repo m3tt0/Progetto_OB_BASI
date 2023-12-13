@@ -152,8 +152,9 @@ $$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Libro
-AFTER UPDATE OF Editore ON Libro
+BEFORE UPDATE OF Editore ON Libro
 FOR EACH ROW
+WHEN (old.editore != new.editore)
 EXECUTE FUNCTION checkEditoreInCollanaUpdateLibro();
 
 
@@ -165,7 +166,7 @@ BEGIN
                FROM Libro_Contenuto_Collana AS lc
                WHERE lc.collana = old.issn)
     THEN
-        DELETE FROM Libro_Contenuto_Collana AS lc WHERE lc.collana = old.issn;
+        RAISE EXCEPTION 'Non si può modificare l''editore di una collana non vuota';
     END IF;
     RETURN old;
 END;
@@ -173,7 +174,7 @@ $$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Collana
-AFTER UPDATE OF Editore ON Collana
+BEFORE UPDATE OF Editore ON Collana
 FOR EACH ROW
 EXECUTE FUNCTION checkEditoreInCollanaUpdateCollana();
 
