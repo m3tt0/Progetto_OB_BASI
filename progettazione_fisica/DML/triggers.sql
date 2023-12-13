@@ -40,9 +40,15 @@ END
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER Notifica_Utente_Serie_Complete
-AFTER INSERT OR UPDATE OF quantita ON Vendita
+CREATE OR REPLACE TRIGGER Notifica_Utente_Serie_Complete_On_Insert
+AFTER INSERT ON Vendita
 FOR EACH ROW
+EXECUTE FUNCTION notificaUtenteSerieComplete();
+
+CREATE OR REPLACE TRIGGER Notifica_Utente_Serie_Complete_On_Update
+AFTER UPDATE OF quantita ON Vendita
+FOR EACH ROW
+WHEN (old.quantita = 0)
 EXECUTE FUNCTION notificaUtenteSerieComplete();
 
 
