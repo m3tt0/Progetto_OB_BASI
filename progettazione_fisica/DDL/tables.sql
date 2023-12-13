@@ -171,10 +171,9 @@ CREATE TABLE IF NOT EXISTS Vendita
 CREATE TABLE IF NOT EXISTS Serie
 (
     nome VARCHAR NOT NULL,
-    prequel ISBN NOT NULL UNIQUE,
+    prequel ISBN NOT NULL PRIMARY KEY,
     sequel ISBN NOT NULL UNIQUE,
 
-    CONSTRAINT Serie_PK PRIMARY KEY (nome, prequel, sequel),
     CONSTRAINT Prequel_FK FOREIGN KEY (prequel) REFERENCES Libro (isbn) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT Sequel_FK FOREIGN KEY (sequel) REFERENCES Libro (isbn) ON UPDATE CASCADE ON DELETE CASCADE,
 
@@ -197,10 +196,10 @@ CREATE TABLE IF NOT EXISTS Utente
 CREATE TABLE IF NOT EXISTS Notifica
 (
     messaggio TEXT NOT NULL,
-    data_ora TIMESTAMP NOT NULL,
     destinatario USERNAME NOT NULL,
+    data_ora TIMESTAMP NOT NULL DEFAULT now(),
 
-    CONSTRAINT Notifica_PK PRIMARY KEY (data_ora, destinatario),
+    -- CONSTRAINT Notifica_PK PRIMARY KEY (data_ora, destinatario),
     CONSTRAINT Destinatario_FK FOREIGN KEY (destinatario) REFERENCES Utente(username) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

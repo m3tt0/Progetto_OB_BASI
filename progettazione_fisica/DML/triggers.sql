@@ -95,7 +95,7 @@ $$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER Remove_Collana
-AFTER DELETE ON Libro_Contenuto_Collana
+AFTER DELETE OR UPDATE ON Libro_Contenuto_Collana
 FOR EACH ROW
 EXECUTE FUNCTION removeCollana();
 
@@ -114,7 +114,7 @@ $$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER Remove_Rivista
-AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
+AFTER DELETE OR UPDATE ON Articolo_Scientifico_Pubblicazione_Rivista
 FOR EACH ROW
 EXECUTE FUNCTION removeRivista();
 
@@ -185,7 +185,7 @@ CREATE OR REPLACE FUNCTION coerenzaVendite()
 RETURNS TRIGGER AS
 $$
 DECLARE
-    current_negozio RECORD;
+    current_negozio Negozio%ROWTYPE;
     tipo_libro Libro.modalita_fruizione%TYPE;
 BEGIN
     SELECT * INTO current_negozio FROM Negozio AS n WHERE n.partita_iva = new.negozio;
@@ -203,3 +203,28 @@ CREATE OR REPLACE TRIGGER Coerenza_Vendite
 BEFORE INSERT OR UPDATE ON Vendita
 FOR EACH ROW
 EXECUTE FUNCTION coerenzaVendite();
+
+
+CREATE OR REPLACE FUNCTION coerenzaSalvataggiRaccolte()
+RETURNS TRIGGER AS
+$$
+DECLARE
+    raccolta_to_check Raccolta%ROWTYPE;
+BEGIN
+    SELECT * INTO raccolta_to_check FROM Raccolta WHERE cod_raccolta = new.raccolta;
+    IF raccolta_to_check.visibilita = 'privata' AND raccolta_to_check.proprietario = new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta creata da te stesso e non puoi salvare una raccolta privata';
+    ELSIF raccolta_to_check.visibilita = 'privata' AND raccolta_to_check.proprietario <> new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta privata.';
+    ELSIF raccolta_to_check.visibilita = 'pubblica' AND raccolta_to_check.proprietario = new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta creata da te stesso.';
+    END IF;
+    RETURN new;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Coerenza_Salvtaggi_Raccolte
+BEFORE INSERT OR UPDATE ON Utente_Salvataggio_Raccolta
+FOR EACH ROW
+EXECUTE FUNCTION coerenzaSalvataggiRaccolte();
