@@ -209,3 +209,29 @@ CREATE OR REPLACE TRIGGER Coerenza_Vendite
 BEFORE INSERT OR UPDATE ON Vendita
 FOR EACH ROW
 EXECUTE FUNCTION coerenzaVendite();
+
+
+--UN UTENTE NON PUò SALVARE LE PROPRIE RACCOLTE E NON PUò SALVARE RACCOLTE PRIVATE DI ALTRI UTENTI
+CREATE OR REPLACE FUNCTION coerenzaSalvataggiRaccolte()
+RETURNS TRIGGER AS
+$$
+DECLARE
+    raccolta_to_check Raccolta%ROWTYPE;
+BEGIN
+    SELECT * INTO raccolta_to_check FROM Raccolta WHERE cod_raccolta = new.raccolta;
+    IF raccolta_to_check.visibilita = 'privata' AND raccolta_to_check.proprietario = new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta creata da te stesso e non puoi salvare una raccolta privata';
+    ELSIF raccolta_to_check.visibilita = 'privata' AND raccolta_to_check.proprietario <> new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta privata.';
+    ELSIF raccolta_to_check.visibilita = 'pubblica' AND raccolta_to_check.proprietario = new.utente THEN
+        RAISE EXCEPTION 'Non puoi salvare una raccolta creata da te stesso.';
+    END IF;
+    RETURN new;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Coerenza_Salvtaggi_Raccolte
+BEFORE INSERT OR UPDATE ON Utente_Salvataggio_Raccolta
+FOR EACH ROW
+EXECUTE FUNCTION coerenzaSalvataggiRaccolte();
