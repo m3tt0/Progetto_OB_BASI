@@ -88,7 +88,6 @@ END;
 $$
 LANGUAGE plpgsql;
 
---ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
 CREATE OR REPLACE TRIGGER Remove_Collana
 AFTER DELETE ON Libro_Contenuto_Collana
 FOR EACH ROW
@@ -112,7 +111,6 @@ END;
 $$
 LANGUAGE plpgsql;
 
---ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
 CREATE OR REPLACE TRIGGER Remove_Rivista
 AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
 FOR EACH ROW
@@ -142,6 +140,7 @@ BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
 FOR EACH ROW
 EXECUTE FUNCTION checkEditoreInCollana();
 
+
 CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateLibro()
 RETURNS TRIGGER AS
 $$
@@ -152,11 +151,11 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Libro
 AFTER UPDATE OF Editore ON Libro
 FOR EACH ROW
 EXECUTE FUNCTION checkEditoreInCollanaUpdateLibro();
+
 
 CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateCollana()
 RETURNS TRIGGER AS
@@ -177,6 +176,7 @@ CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Collana
 AFTER UPDATE OF Editore ON Collana
 FOR EACH ROW
 EXECUTE FUNCTION checkEditoreInCollanaUpdateCollana();
+
 
 CREATE OR REPLACE FUNCTION coerenzaVendite()
 RETURNS TRIGGER AS
