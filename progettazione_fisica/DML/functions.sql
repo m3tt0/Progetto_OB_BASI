@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION calcoloNumeroSalvataggiRaccolta(cod_raccolta Raccolta
 RETURNS INTEGER AS
 $$
 BEGIN
-    RETURN (SELECT COUNT(*) FROM Utente_Salvataggio_Raccolta AS r
+    RETURN (SELECT COUNT(r.utente) FROM Utente_Salvataggio_Raccolta AS r
                            WHERE r.raccolta = cod_raccolta);
 END
 $$
