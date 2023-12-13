@@ -82,11 +82,11 @@ CREATE OR REPLACE FUNCTION removeCollana()
 RETURNS TRIGGER AS
 $$
 DECLARE
-    libri_in_collana INTEGER;
+    numero_libri_in_collana INTEGER;
 BEGIN
-    SELECT COUNT(*) INTO libri_in_collana FROM Libro_Contenuto_Collana AS c WHERE c.collana = old.collana;
+    SELECT COUNT(*) INTO numero_libri_in_collana FROM Libro_Contenuto_Collana AS c WHERE c.collana = old.collana;
 
-    IF libri_in_collana < 2 THEN
+    IF numero_libri_in_collana < 2 THEN
         DELETE FROM Collana AS c WHERE c.issn = old.collana;
     END IF;
     RETURN old;
@@ -104,12 +104,8 @@ EXECUTE FUNCTION removeCollana();
 CREATE OR REPLACE FUNCTION removeRivista()
 RETURNS TRIGGER AS
 $$
-DECLARE
-    articoli_rivista RECORD;
 BEGIN
-    SELECT r.rivista INTO articoli_rivista FROM Articolo_Scientifico_Pubblicazione_Rivista AS r WHERE r.rivista = old.rivista;
-
-    IF articoli_rivista == NULL THEN
+    IF NOT EXISTS(SELECT * FROM Articolo_Scientifico_Pubblicazione_Rivista AS r WHERE r.rivista = old.rivista) THEN
         DELETE FROM Rivista AS r WHERE r.issn = old.rivista;
     END IF;
     return old;
