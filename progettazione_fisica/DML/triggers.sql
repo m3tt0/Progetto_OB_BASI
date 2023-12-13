@@ -44,10 +44,6 @@ AFTER INSERT OR UPDATE OF quantita ON Vendita
 FOR EACH ROW
 EXECUTE FUNCTION notificaUtenteSerieComplete();
 
-CREATE OR REPLACE TRIGGER Check_Data_Presentazione
-BEFORE INSERT OR UPDATE OF data_presentazione ON Presentazione_Articolo
-FOR EACH ROW
-EXECUTE FUNCTION checkDataPresentazione();
 
 CREATE OR REPLACE FUNCTION checkDataPresentazione()
 RETURNS TRIGGER AS
@@ -68,11 +64,11 @@ END;
 $$
 LANGUAGE plpgsql;
 
---ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
-CREATE OR REPLACE TRIGGER Remove_Collana
-AFTER DELETE ON Libro_Contenuto_Collana
+CREATE OR REPLACE TRIGGER Check_Data_Presentazione
+BEFORE INSERT OR UPDATE OF data_presentazione ON Presentazione_Articolo
 FOR EACH ROW
-EXECUTE FUNCTION removeCollana();
+EXECUTE FUNCTION checkDataPresentazione();
+
 
 --ELIMINARE UNA COLLANA DI LIBRI SE I LIBRI SONO MENO DI DUE
 CREATE OR REPLACE FUNCTION removeCollana()
@@ -91,10 +87,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER Remove_Rivista
-AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
+CREATE OR REPLACE TRIGGER Remove_Collana
+AFTER DELETE ON Libro_Contenuto_Collana
 FOR EACH ROW
-EXECUTE FUNCTION removeRivista();
+EXECUTE FUNCTION removeCollana();
+
+
 
 --ELIMINARE UNA RIVISTA DI ARTICOLI SE è VUOTA
 CREATE OR REPLACE FUNCTION removeRivista()
@@ -113,11 +111,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER Check_Editore_Collana
-BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
+CREATE OR REPLACE TRIGGER Remove_Rivista
+AFTER DELETE ON Articolo_Scientifico_Pubblicazione_Rivista
 FOR EACH ROW
-EXECUTE FUNCTION checkEditoreInCollana();
+EXECUTE FUNCTION removeRivista();
+
+
 
 CREATE OR REPLACE FUNCTION checkEditoreInCollana()
 RETURNS TRIGGER AS
@@ -137,11 +136,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Libro
-AFTER UPDATE OF Editore ON Libro
+CREATE OR REPLACE TRIGGER Check_Editore_Collana
+BEFORE INSERT OR UPDATE ON Libro_Contenuto_Collana
 FOR EACH ROW
-EXECUTE FUNCTION checkEditoreInCollanaUpdateLibro();
+EXECUTE FUNCTION checkEditoreInCollana();
+
+
 
 CREATE OR REPLACE FUNCTION checkEditoreInCollanaUpdateLibro()
 RETURNS TRIGGER AS
@@ -157,6 +157,12 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Libro
+AFTER UPDATE OF Editore ON Libro
+FOR EACH ROW
+EXECUTE FUNCTION checkEditoreInCollanaUpdateLibro();
+
 
 
 CREATE OR REPLACE TRIGGER Check_Editore_Collana_Update_Collana
@@ -179,10 +185,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER Coerenza_Vendite
-BEFORE INSERT OR UPDATE ON Vendita
-FOR EACH ROW
-EXECUTE FUNCTION coerenzaVendite();
+
 
 CREATE OR REPLACE FUNCTION coerenzaVendite()
 RETURNS TRIGGER AS
@@ -201,3 +204,8 @@ BEGIN
 END
 $$
 LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER Coerenza_Vendite
+BEFORE INSERT OR UPDATE ON Vendita
+FOR EACH ROW
+EXECUTE FUNCTION coerenzaVendite();
