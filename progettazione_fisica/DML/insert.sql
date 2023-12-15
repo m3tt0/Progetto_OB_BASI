@@ -440,13 +440,8 @@ INSERT INTO Libro_Contenuto_Raccolta (libro, raccolta) VALUES
 
 
 INSERT INTO Utente_Salvataggio_Raccolta (utente, raccolta) VALUES
-('john_doe', 1),
-('john_doe', 3),
-('alice_smith', 1),
-('alice_smith', 9),
-('bob_jones', 1),
 ('bob_jones', 10),
-('emma_davis', 3),
 ('emma_davis', 8),
-('olivia_martin', 7),
-('sophia_adams', 6);
+('sophia_adams', 6),
+('john_doe', 10),
+('emma_davis', 2);
