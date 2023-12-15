@@ -84,6 +84,18 @@ END
 $$
 LANGUAGE plpgsql;
 
+CREATE OR REPLACE PROCEDURE checkPartecipazioneSerie(nome_serie Serie.nome%TYPE, prequel_to_check Serie.prequel%TYPE, sequel_to_check Serie.sequel%TYPE) AS
+$$
+BEGIN
+    IF EXISTS(SELECT * FROM Serie WHERE prequel = sequel_to_check AND nome != nome_serie) OR
+       EXISTS(SELECT * FROM Serie WHERE sequel = prequel_to_check AND nome != nome_serie)
+    THEN
+        RAISE EXCEPTION 'Un libro può far parte di una sola serie';
+    END IF;
+END;
+$$
+LANGUAGE plpgsql;
+
 
 --TRIGGER CHE TI PERMETTE DI INSERIRE I LIBRI correttamente in una serie
 CREATE OR REPLACE FUNCTION insertIntoSerie()
@@ -92,6 +104,7 @@ $$
 BEGIN
     CALL checkOnlyRomanziInSerie(new.prequel, new.sequel);
     CALL checkFormatoSerie(new.prequel, new.sequel);
+    CALL checkPartecipazioneSerie(new.nome, new.prequel, new.sequel);
     IF EXISTS(SELECT * FROM Serie WHERE nome = new.nome) THEN
         CALL checkCicloSerie(new.nome, new.prequel, new.sequel);
         CALL checkSequenzialitaSerie(new.nome, new.prequel, new.sequel);
@@ -166,6 +179,9 @@ CREATE OR REPLACE FUNCTION updateNomeSerie()
 RETURNS TRIGGER AS
 $$
 BEGIN
+    IF EXISTS(SELECT * FROM Serie WHERE nome = new.nome) THEN
+        RAISE EXCEPTION 'Non è possibile inserire due serie con lo stesso nome';
+    END IF;
     UPDATE Serie SET nome = new.nome WHERE nome = old.nome;
     RETURN new;
 END
