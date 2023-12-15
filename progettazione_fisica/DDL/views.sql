@@ -41,7 +41,7 @@ BEGIN
     RETURN QUERY(
         SELECT a.doi, a.titolo
         FROM Articolo_Scientifico_Pubblicazione_Rivista AS asr JOIN Articolo_Scientifico AS a ON asr.articolo_scientifico = a.doi
-        WHERE asr.rivista = cur_rivista
+        WHERE asr.rivista = rivista_richiesta
     );
 END;
 $$ LANGUAGE plpgsql;
@@ -113,7 +113,7 @@ BEGIN
     RETURN QUERY(
         SELECT l.isbn, l.titolo
         FROM Libro AS l JOIN Libro_Contenuto_Collana AS col ON col.libro = l.isbn
-        WHERE col.collana = cur_collana
+        WHERE col.collana = collana_richiesta
     );
 END;
 $$ LANGUAGE plpgsql;

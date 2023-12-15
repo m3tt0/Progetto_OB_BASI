@@ -1,8 +1,3 @@
--- Implementazione del vincolo di formato serie
-
--- verificare l'integrità di una serie: una serie deve avere tutti i libri disposti in maniera sequenziale
-
---FUNZIONE INTREGRITA' SERIE
 CREATE OR REPLACE PROCEDURE checkOnlyRomanziInSerie(prequel Serie.prequel%TYPE, sequel Serie.sequel%TYPE) AS
 $$
 DECLARE
@@ -40,18 +35,12 @@ DECLARE
     primo_serie Serie.prequel%TYPE;
     ultimo_serie Serie.sequel%TYPE;
 BEGIN
-    -- Perché va gestito il caso del primo/ultimo libro? Perché il vincolo di UNIQUE non è sufficiente
-    -- per gestire quest'ultimo caso, il vincolo di UNIQUE su prequel/sequel impedisce soltanto
-    -- l'inserimento di due tuple con attributo "prequel/sequel" uguali
-
-    -- Prendo il primo libro di una serie
     SELECT s.prequel INTO primo_serie
     FROM Serie AS s WHERE s.nome = nome_serie AND s.prequel NOT IN (
         SELECT s1.sequel
         FROM Serie AS s1
         WHERE s1.nome = s.nome
     );
-    -- Prendo l'ultimo libro di una serie
     SELECT s.sequel INTO ultimo_serie
     FROM Serie AS s
     WHERE s.nome = nome_serie
@@ -60,7 +49,6 @@ BEGIN
         FROM Serie AS s1
         WHERE s1.nome = s.nome
     );
-    -- Controllo che l'ultimo libro della serie non sia prequel del primo libro di una serie
     IF prequel = ultimo_serie AND sequel = primo_serie THEN
         RAISE EXCEPTION $e$L'ultimo libro di una serie non può essere prequel del primo libro della serie.\n
                             Il primo libro di una serie non può essere sequel dell'ultimo libro della serie$e$;
@@ -97,7 +85,6 @@ $$
 LANGUAGE plpgsql;
 
 
---TRIGGER CHE TI PERMETTE DI INSERIRE I LIBRI correttamente in una serie
 CREATE OR REPLACE FUNCTION insertIntoSerie()
 RETURNS TRIGGER AS
 $$
